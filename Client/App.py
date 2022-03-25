@@ -184,7 +184,8 @@ dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.set_primary_window("main_window", True)
 
-dpg.show_item_registry()
+#debug
+#dpg.show_item_registry()
 
 dpg.start_dearpygui()
 dpg.destroy_context()
