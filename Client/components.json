@@ -1,0 +1,15 @@
+{
+  "Size":{
+    "unit": ["choice","pixels","kb","cm"],
+    "pixels":["vec2f"],
+    "kb": ["float"],
+    "cm": ["float"],
+    "comparator": ["choice",">",">=","<","<=","=="],
+    "threshold": ["float"]
+  },
+
+  "Colors": {
+    "color": ["color"],
+    "threshold": ["float"]
+  }
+}
