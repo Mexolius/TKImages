@@ -103,6 +103,7 @@ def parse_components(path):
 
 
 def execute_sequence():
+    clear_error()
     input = dpg.get_value("root_path")
     if len(input)==0:
         raise_error("Error: Empty root path")
@@ -113,7 +114,12 @@ def execute_sequence():
         return
 
     parsed=[]
-    next = links["input_param"]
+    try:
+        next = links["input_param"]
+    except KeyError:
+        raise_error("Error: No active links to follow")
+        return
+
     while(True):
         parsed.append(dict())
         parsed[-1]["name"]=dpg.get_item_label(dpg.get_item_parent(next))
@@ -153,6 +159,10 @@ def cancel_execution():
 def raise_error(error):
     dpg.set_value("console",error)
     dpg.configure_item("console",color=(255,0,0))
+
+def clear_error():
+    dpg.set_value("console", "Error message: 0")
+    dpg.configure_item("console", color=(0, 255, 0))
 
 parse_components("components.json")
 with dpg.window(tag="main_window"):
