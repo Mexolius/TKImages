@@ -34,8 +34,8 @@ class ImageFinderRabbitMqSetupApp {
   }
 
   def createQueue(channel: Channel, queueName: String): Unit = {
-    channel.queueDeclare(queueName, false, false, true, null)
-    channel.queueBind(queueName, EXCHANGE_NAME, "#")
+    channel.queueDeclare(s"$QUEUE_PREFIX.$queueName", false, false, false, null)
+    channel.queueBind(s"$QUEUE_PREFIX.$queueName", EXCHANGE_NAME, queueName)
     scribe.info(s"Queue $queueName created")
   }
 
@@ -54,6 +54,7 @@ object ImageFinderRabbitMqSetupApp extends App {
   val PORT          = conf.getString("rabbitMqPort").toInt
   val USERNAME      = conf.getString("rabbitMqUser")
   val PASSWORD      = conf.getString("rabbitMqPassword")
+  val QUEUE_PREFIX  = conf.getString("topic_prefix")
   val TOPICS        = conf.getList("topics").unwrapped().asScala.map(_.toString).toList
   val EXCHANGE_NAME = "ImageFinder"
 
