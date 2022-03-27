@@ -10,7 +10,7 @@ class RabbitMQMessage(ABC):
         return 'ImageFinder'
 
     @abstractmethod
-    def queue(self):
+    def topic(self):
         pass
 
     def json(self):
@@ -32,7 +32,7 @@ class ResultResponse(RabbitMQMessage):
         self.total = len(data)
         self.sender = sender
 
-    def queue(self):
+    def topic(self):
         return 'results'
 
 
@@ -41,7 +41,7 @@ class SimpleQuery(Query):
         params = {"data": data, "moreData": moreData}
         super().__init__(paths, params)
 
-    def queue(self):
+    def topic(self):
         return 'size'
 
 
@@ -51,5 +51,5 @@ class QueryExecutor:
 
     def execute(self, queries: Sequence[Query]):
         for q in queries:
-            print(f"sent {q.json()} to {q.queue()} @ {q.exchange()}")
-            self.__producer.publish(q.exchange(), q.queue(), q.json())
+            print(f"sent {q.json()} to {q.topic()} @ {q.exchange()}")
+            self.__producer.publish(q.exchange(), q.topic(), q.json())

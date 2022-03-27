@@ -3,7 +3,7 @@ from Query import ResultResponse
 
 
 def send_result(prod, result):
-    prod.publish(result.exchange(), result.queue(), result.json())
+    prod.publish(result.exchange(), result.topic(), result.json())
 
 
 if __name__ == '__main__':

@@ -11,8 +11,8 @@ class RabbitMQProducer:
         self.__connection = pika.BlockingConnection(params)
         self.__channel = self.__connection.channel()
 
-    def publish(self, exchange, queue, data):
-        self.__channel.basic_publish(exchange=exchange, routing_key=queue, body=data)
+    def publish(self, exchange, topic, data):
+        self.__channel.basic_publish(exchange=exchange, routing_key=topic, body=data)
 
     def __enter__(self):
         return self
