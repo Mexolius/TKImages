@@ -2,7 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from RabbitMQClient import RabbitMQProducer
+from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 
 class RabbitMQMessage(ABC):
@@ -19,6 +19,7 @@ class RabbitMQMessage(ABC):
 
 class Query(RabbitMQMessage, ABC):
     def __init__(self, paths: Sequence[str], params):
+        params = {k: v for k, v in params.items() if v is not None and v != ""}
         self.path_number = len(paths)
         self.paths = paths
         self.param_number = len(params)
@@ -26,14 +27,22 @@ class Query(RabbitMQMessage, ABC):
 
 
 class ResultResponse(RabbitMQMessage):
-    def __init__(self, result, data, sender):
+    def __init__(self, result, paths, sender):
         self.result = result
-        self.data = data
-        self.total = len(data)
+        self.paths = paths
+        self.total = len(paths)
         self.sender = sender
 
     def topic(self):
         return 'results'
+
+
+class SizeQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    def topic(self):
+        return 'size'
 
 
 class SimpleQuery(Query):
@@ -45,11 +54,52 @@ class SimpleQuery(Query):
         return 'size'
 
 
-class QueryExecutor:
-    def __init__(self, producer: RabbitMQProducer):
-        self.__producer = producer
+class QueryBuilder:
+    __query_type: str
+    __query_paths: Sequence[str]
+    __query_data: dict
 
-    def execute(self, queries: Sequence[Query]):
-        for q in queries:
-            print(f"sent {q.json()} to {q.topic()} @ {q.exchange()}")
-            self.__producer.publish(q.exchange(), q.topic(), q.json())
+    def data(self, data: dict):
+        self.__query_data = data
+        return self
+
+    def query_type(self, query_type: str):
+        self.__query_type = query_type
+        return self
+
+    def paths(self, paths: Sequence[str]):
+        self.__query_paths = paths
+        return self
+
+    def build(self):
+        return {
+            'Size': lambda paths, data: SizeQuery(paths, data)
+            # 'Color': lambda paths, data: SimpleQuery(paths, data, "a")
+            # 'Dogs'
+        }[self.__query_type](self.__query_paths, self.__query_data)
+
+
+class QueryExecutor:
+    def __init__(self, producer: RabbitMQProducer, consumer: RabbitMQSyncConsumer):
+        self.__producer = producer
+        self.__consumer = consumer
+
+    def execute(self, queries: Sequence[Query], query_cb):
+        new_paths = queries[0].paths
+
+        def callback(ch, method, properties, body):
+            self.__consumer.stop_consuming()
+            nonlocal current_query
+            query_cb(body, current_query)
+            nonlocal new_paths
+            new_paths = json.loads(body)["paths"]
+
+        current_query = 1
+        for query in queries:
+            query.paths = new_paths
+            print(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
+            self.__producer.publish(query.exchange(), query.topic(), query.json())
+
+            self.__consumer.consume(callback)
+            # if GLOBAL_EXECUTE_STOP: break
+            current_query += 1

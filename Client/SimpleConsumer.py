@@ -1,5 +1,6 @@
 from RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
 from Query import ResultResponse
+import json
 
 
 def send_result(prod, result):
@@ -14,7 +15,7 @@ if __name__ == '__main__':
         print(" [x] Received %r" % body)
 
         consumer.stop_consuming()
-        result = ResultResponse(404, ["path1", "path2"], "THE SENDER")
+        result = ResultResponse(404, json.loads(body)["paths"], "THE SENDER")
         send_result(producer, result)
 
 

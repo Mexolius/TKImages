@@ -1,7 +1,7 @@
 ResultMessage
 {
     "result": result code (200 | 204 | 500 etc.) -> Http,
-    "data": [<Ścieżki do plików>],
+    "paths": [<Ścieżki do plików>],
     "total": ile jest wyników,
     "sender": nazwa serwisu odsyłającego wynik 
 }
