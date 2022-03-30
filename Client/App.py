@@ -142,6 +142,7 @@ def execute_sequence(query_executor):
         print(" [x] Received %r" % body)
         dpg.set_value("progress_bar", query_no / seq_len)
 
+    dpg.set_value("progress_bar", 0)
     query_executor.execute(parsed, callback)
 
     # for p in parsed:
