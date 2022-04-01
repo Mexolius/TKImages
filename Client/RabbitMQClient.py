@@ -1,5 +1,6 @@
-import pika
 import threading
+
+import pika
 
 
 class RabbitMQProducer:
