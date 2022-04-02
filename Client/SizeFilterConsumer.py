@@ -20,14 +20,6 @@ def send_result(prod, result):
 
 
 if __name__ == '__main__':
-    import sys
-    from pathlib import Path  # if you haven't already done so
-
-    file = Path(__file__).resolve()
-    parent, root = file.parent, file.parents[1]
-    sys.path.append(str(root))
-    from Client.SizeFilter import filter_by_KB
-
     logger.info("Starting SizeFilterConsumer")
     consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.size', 'myuser', 'mypassword')
     producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
