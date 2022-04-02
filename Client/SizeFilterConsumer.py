@@ -4,6 +4,7 @@ import logging
 from Logger.CustomLogFormatter import CustomLogFormatter
 from RabbitMq.Query import ResultResponse
 from RabbitMq.RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
+from SizeFilter.SizeFilter import filter_by_KB
 
 logger = logging.getLogger("SimpleFilterConsumer")
 logger.setLevel(logging.DEBUG)
