@@ -193,7 +193,7 @@ if __name__ == '__main__':
     dpg.create_context()
 
     with dpg.font_registry():
-        default_font = dpg.add_font("Montserrat-Light.otf", font_size, tag="font")
+        default_font = dpg.add_font("Fonts/Montserrat-Light.otf", font_size, tag="font")
 
     with dpg.handler_registry():
         dpg.add_mouse_down_handler(callback=show_popup)
