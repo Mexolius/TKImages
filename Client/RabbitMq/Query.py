@@ -2,7 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from . import RabbitMQClient
 
 
 class RabbitMQMessage(ABC):
@@ -80,7 +80,7 @@ class QueryBuilder:
 
 
 class QueryExecutor:
-    def __init__(self, producer: RabbitMQProducer, consumer: RabbitMQSyncConsumer):
+    def __init__(self, producer: RabbitMQClient.RabbitMQProducer, consumer: RabbitMQClient.RabbitMQSyncConsumer):
         self.__producer = producer
         self.__consumer = consumer
 
@@ -103,3 +103,7 @@ class QueryExecutor:
             self.__consumer.consume(callback)
             # if GLOBAL_EXECUTE_STOP: break
             current_query += 1
+
+
+if __name__ == '__main__':
+    print('dupa')

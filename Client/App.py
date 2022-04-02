@@ -5,9 +5,9 @@ import os
 
 import dearpygui.dearpygui as dpg
 
-from CustomLogFormatter import CustomLogFormatter
-from Query import QueryExecutor, QueryBuilder
-from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from Logger.CustomLogFormatter import CustomLogFormatter
+from RabbitMq.Query import QueryExecutor, QueryBuilder
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("App")
 logger.setLevel(logging.DEBUG)
