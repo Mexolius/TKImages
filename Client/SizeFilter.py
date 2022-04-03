@@ -1,4 +1,5 @@
 import os
+import imagesize
 
 
 
@@ -27,3 +28,12 @@ def filter_by_KB(paths, reference, comparator, threshold):
             filtered_paths.append(path)
     return filtered_paths
 
+def filter_by_pixels(paths, reference, comparator, threshold):
+    filtered_paths = []
+    comparator = get_comparator( comparator, threshold)
+    for path in paths:
+        width, height = imagesize.get(path)
+        if comparator(reference[0], width) and comparator(reference[1], height):
+            filtered_paths.append(path)
+    return filtered_paths
+    
