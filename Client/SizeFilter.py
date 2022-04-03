@@ -11,7 +11,7 @@ def check_size_in_KB(path):
 
 
 def get_comparator( comparator, threshold = 0):
-    return { "==":lambda reference, checked: abs(reference - checked) < threshold,
+    return { "==":lambda reference, checked: abs(reference - checked) <= threshold,
             ">":lambda reference, checked: reference > checked,
             ">=":lambda reference, checked: reference >= checked,
             "<":lambda reference, checked: reference < checked,
