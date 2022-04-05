@@ -5,7 +5,7 @@ import os
 import time
 
 from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
-from Query import QueryExecutor, QueryBuilder
+from QueryUtils import QueryExecutor, QueryBuilder
 
 # global parameters
 initial_width = 1280
@@ -224,6 +224,8 @@ if __name__ == '__main__':
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("main_window", True)
+    dpg.set_value("root_path", "C:\\Users\\ernit\\OneDrive\\Pulpit\\images")
+
 
     # debug
     # dpg.show_item_registry()

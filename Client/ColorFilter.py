@@ -1,26 +1,17 @@
 import json
 
 from Query import ResultResponse
-from Color import ColorParams, ColorMetric, Color
+from Color import ColorParams, ColorMetric
 from PIL import ImageStat, Image
-from typing import Callable
+from Utils import get_comparator
 
 SERVICE_NAME = "color service"
 
 
-def get_comparator(comparator, threshold=0) -> Callable[[Color, Color], bool]:
-    return {"==": lambda checked, reference: any(abs(r - c) < threshold for r, c in zip(checked, reference)),
-            "<": lambda checked, reference: any(r < c for r, c in zip(checked, reference)),
-            "<=": lambda checked, reference: any(r <= c for r, c in zip(checked, reference)),
-            ">": lambda checked, reference: any(r > c for r, c in zip(checked, reference)),
-            ">=": lambda checked, reference: any(r >= c for r, c in zip(checked, reference))
-            }[comparator]
-
-
 def get_processing_metric(metric: ColorMetric):
     return {
-        "max": lambda stat: stat.extrema[:, 1],
-        "min": lambda stat: stat.extrema[:, 0],
+        "max": lambda stat: map(lambda x: x[1], stat.extrema),
+        "min": lambda stat: map(lambda x: x[0], stat.extrema),
         "mean": lambda stat: stat.mean,
         "median": lambda stat: stat.median,
         "rms": lambda stat: stat.rms
@@ -37,10 +28,11 @@ def process_request(body: str) -> ResultResponse:
     comparator = get_comparator(params.comparator, params.threshold)
 
     def is_compliant(path):
-        return comparator(
+        return all(map(
+            comparator,
             metric(ImageStat.Stat(Image.open(path))),
             params.color
-        )
+        ))
 
-    result = filter(is_compliant, paths)
+    result = list(filter(is_compliant, paths))
     return ResultResponse(200, result, SERVICE_NAME)

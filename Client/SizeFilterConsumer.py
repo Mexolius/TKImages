@@ -1,8 +1,8 @@
-from cv2 import threshold
-from RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
-from Query import ResultResponse
-from SizeFilter import filter_by_KB
 import json
+
+from Query import ResultResponse
+from RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
+from SizeFilter import filter_by_KB
 
 SENDER = "Size"
 

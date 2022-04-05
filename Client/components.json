@@ -10,6 +10,9 @@
 
   "Colors": {
     "color": ["color"],
+    "system": ["choice","RGB","HSV","CMYK"],
+    "metric": ["choice","min","max","mean","median","rms"],
+    "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
   }
 }
