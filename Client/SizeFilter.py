@@ -1,4 +1,5 @@
 import os
+import imagesize
 
 
 
@@ -10,7 +11,7 @@ def check_size_in_KB(path):
 
 
 def get_comparator( comparator, threshold = 0):
-    return { "==":lambda reference, checked: abs(reference - checked) < threshold,
+    return { "==":lambda reference, checked: abs(reference - checked) <= threshold,
             ">":lambda reference, checked: reference > checked,
             ">=":lambda reference, checked: reference >= checked,
             "<":lambda reference, checked: reference < checked,
@@ -27,3 +28,12 @@ def filter_by_KB(paths, reference, comparator, threshold):
             filtered_paths.append(path)
     return filtered_paths
 
+def filter_by_pixels(paths, reference, comparator, threshold):
+    filtered_paths = []
+    comparator = get_comparator( comparator, threshold)
+    for path in paths:
+        width, height = imagesize.get(path)
+        if comparator(reference[0], width) and comparator(reference[1], height):
+            filtered_paths.append(path)
+    return filtered_paths
+    
