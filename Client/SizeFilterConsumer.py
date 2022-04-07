@@ -17,8 +17,8 @@ if __name__ == '__main__':
 
 
     def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
         body = json.loads(body)
+        print('Received:\n')
         print(body)
         params = body["params"]
 
