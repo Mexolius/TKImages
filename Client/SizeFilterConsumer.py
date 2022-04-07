@@ -1,9 +1,9 @@
 import json
-from cv2 import threshold
-from RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
-from Query import ResultResponse
-import logging
 import sys
+
+from RabbitMq.Query import QueryExecutor, QueryBuilder, ResultResponse
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+import logging
 from Logger.CustomLogFormatter import CustomLogFormatter
 from SizeFilter.SizeFilter import filter_by_KB, filter_by_pixels
 
@@ -50,8 +50,8 @@ if __name__ == '__main__':
                 result = ResultResponse(501, [], SENDER)
         except Exception as e:
             result = ResultResponse(404, [], SENDER)
-            #logger.info(f"Exception {e}")
-            #logger.info(sys.exc_info()[0])
+            logger.info(f"Exception {e}")
+            logger.info(sys.exc_info()[0])
 
         send_result(producer, result)
 
