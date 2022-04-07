@@ -2,9 +2,10 @@ import json
 
 from Query import ResultResponse
 from RabbitMQClient import RabbitMQSyncConsumer, RabbitMQProducer
-from SizeFilter import filter_by_KB
+from SizeFilter import filter_by_KB, filter_by_pixels
 
 SENDER = "Size"
+
 
 def send_result(prod, result):
     prod.publish(result.exchange(), result.topic(), result.json())
@@ -20,16 +21,27 @@ if __name__ == '__main__':
         body = json.loads(body)
         print(body)
         params = body["params"]
-        if params["unit"] == "kb":
-                if "threshold" in params.keys():
-                    threshold = float(params["threshold"])
-                else:
-                    threshold = 0
 
-                res = filter_by_KB(paths = body["paths"], reference = float(params["kb"]), comparator = params["comparator"], threshold = threshold)
-                result = ResultResponse(200, res, SENDER)
+        if "threshold" in params.keys():
+            threshold = float(params["threshold"])
         else:
-            result = ResultResponse(501, [], SENDER)
+            threshold = 0
+        try:
+            if params["unit"] == "kb":
+                res = filter_by_KB(paths=body["paths"], reference=float(params["kb"]), comparator=params["comparator"],
+                                   threshold=threshold)
+                result = ResultResponse(200, res, SENDER)
+            elif params["unit"] == "pixels":
+                res = filter_by_pixels(paths=body["paths"], reference=params["pixels"], comparator=params["comparator"],
+                                       threshold=threshold)
+                result = ResultResponse(200, res, SENDER)
+            else:
+                result = ResultResponse(501, [], SENDER)
+        except Exception as e:
+            result = ResultResponse(404, [], SENDER)
+            # logger.info(f"Exception {e}")
+            # logger.info(sys.exc_info()[0])
+
         send_result(producer, result)
 
 
