@@ -3,6 +3,7 @@ name := "ImageFinderRabbitMqSetupApp"
 version := "0.1"
 
 scalaVersion := "2.13.8"
+trapExit := false
 
 libraryDependencies += "com.outr" %% "scribe" % "3.8.0"
 libraryDependencies += "com.newmotion" %% "akka-rabbitmq" % "6.0.0"
