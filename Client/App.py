@@ -1,11 +1,11 @@
-import dearpygui.dearpygui as dpg
-import json
 import glob
+import json
 import os
-import time
 
-from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+import dearpygui.dearpygui as dpg
+
 from Query import QueryExecutor, QueryBuilder
+from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 # global parameters
 initial_width = 1280
@@ -15,6 +15,7 @@ scroll_start = []
 scroll_add = [0, 0]
 component_map = dict()
 links = dict()
+
 
 class Component:
     def __init__(self, label):
@@ -191,12 +192,15 @@ if __name__ == '__main__':
         dpg.add_mouse_release_handler(callback=scroll_end, button=2)
         dpg.add_key_press_handler(key=46, callback=delete_nodes)
 
-    rmq_consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.results', 'myuser', 'mypassword')
+    rmq_consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.results', 'myuser',
+                                        'mypassword')
     rmq_producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
     query_executor = QueryExecutor(rmq_producer, rmq_consumer)
 
+
     def execution_callback():
         execute_sequence(query_executor)
+
 
     parse_components("components.json")
     with dpg.window(tag="main_window"):
