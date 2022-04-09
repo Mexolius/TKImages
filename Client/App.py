@@ -1,11 +1,20 @@
 import glob
 import json
+import logging
 import os
 
 import dearpygui.dearpygui as dpg
 
-from QueryUtils import QueryExecutor, QueryBuilder
-from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from Logger.CustomLogFormatter import CustomLogFormatter
+from RabbitMq.Query import QueryBuilder, QueryExecutor
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+
+logger = logging.getLogger("App")
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(CustomLogFormatter())
+logger.addHandler(ch)
 
 # global parameters
 initial_width = 1280
@@ -140,7 +149,7 @@ def execute_sequence(query_executor):
     seq_len = len(parsed)
 
     def callback(body, query_no):
-        print(" [x] Received %r" % body)
+        logger.info(" [x] Received %r" % body)
         dpg.set_value("progress_bar", query_no / seq_len)
 
     dpg.set_value("progress_bar", 0)
@@ -181,10 +190,11 @@ def clear_error():
 
 
 if __name__ == '__main__':
+    logger.info("Starting App...")
     dpg.create_context()
 
     with dpg.font_registry():
-        default_font = dpg.add_font("Montserrat-Light.otf", font_size, tag="font")
+        default_font = dpg.add_font("Fonts/Montserrat-Light.otf", font_size, tag="font")
 
     with dpg.handler_registry():
         dpg.add_mouse_down_handler(callback=show_popup)

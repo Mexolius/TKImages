@@ -1,8 +1,7 @@
 import os
 
 import imagesize
-
-from Utils import get_comparator
+from Utils.Utils import get_comparator
 
 
 def check_size_in_KB(path):
