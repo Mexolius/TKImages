@@ -3,7 +3,7 @@ from configparser import ConfigParser, ExtendedInterpolation
 
 import pika
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from .Query import RabbitMQMessage
 
@@ -50,7 +50,7 @@ class RabbitMQProducer(RabbitMQConnection):
         self.__channel.basic_publish(exchange=message.exchange(), routing_key=message.topic(), body=message.json())
 
 
-class RabbitMQSyncConsumer(RabbitMQConnection):
+class RabbitMQConsumer(RabbitMQConnection, ABC):
     __exchange: str
     __queue: str
 
@@ -76,39 +76,21 @@ class RabbitMQSyncConsumer(RabbitMQConnection):
         self.__exchange = exchange
         self.__queue = queue
 
+    def stop_consuming(self):
+        self.__channel.stop_consuming()
+
+    @abstractmethod
+    def consume(self, callback): ...
+
+
+class RabbitMQSyncConsumer(RabbitMQConsumer):
+
     def consume(self, callback):
         self.__channel.basic_consume(queue=self.__queue, on_message_callback=callback, auto_ack=True)
         self.__channel.start_consuming()
 
-    def stop_consuming(self):
-        self.__channel.stop_consuming()
 
-
-class RabbitMQAsyncConsumer(RabbitMQConnection):
-    __exchange: str
-    __queue: str
-
-    @staticmethod
-    def from_config(queue_name: str):
-        config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read('../config.ini')
-        rabbit = config['RABBITMQ']
-
-        return RabbitMQAsyncConsumer(
-            rabbit.get('address'),
-            rabbit.get('port'),
-            rabbit.get('exchange'),
-            config.get('QUEUES', queue_name),
-            rabbit.get('username'),
-            rabbit.get('password'),
-        )
-
-    def __init__(self, server, port, exchange, queue, username, password):
-        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port)
-        self.__connection = pika.BlockingConnection(params)
-        self.__channel = self.__connection.channel()
-        self.__exchange = exchange
-        self.__queue = queue
+class RabbitMQAsyncConsumer(RabbitMQConsumer):
 
     def consume(self, callback):
         self.__channel.basic_consume(
@@ -121,6 +103,3 @@ class RabbitMQAsyncConsumer(RabbitMQConnection):
 
         consumer_thread = threading.Thread(target=start_self)
         consumer_thread.start()
-
-    def stop_consuming(self):
-        self.__channel.stop_consuming()
