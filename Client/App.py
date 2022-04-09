@@ -99,23 +99,29 @@ def add_node(sender, app, u):
             for k, v in component.parameters.items():
                 if v[0] == "float":
 
-
-                    dpg.add_text(k)
+                    dpg.add_text(k,label=k)
                     dpg.add_same_line(xoffset=110)
-                    dpg.add_input_text(width=150,default_value="0",tag=k)
+                    dpg.add_input_text(width=150,default_value="0")
                 elif v[0] == "vec2f":
 
-                    dpg.add_text(k)
+                    dpg.add_text(k,label=k)
                     dpg.add_same_line(xoffset=110)
-                    dpg.add_input_floatx(size=2, width=150,default_value=(0,0),tag=k)
+                    dpg.add_input_floatx(size=2, width=150,default_value=(0,0))
                 elif v[0] == "choice":
-                    if k=="comparator":
-                        for id,i in enumerate(v[1:]):
-                            v[id+1]=comparator_dict[i]
-                    dpg.add_text(k)
+
+                    dpg.add_text(k,label=k)
                     dpg.add_same_line(xoffset=110)
-                    dpg.add_combo(v[1:],width=150,default_value=v[1],tag=k)
+                    if k=="comparator":
+                        vi=[]
+                        for id,i in enumerate(v[1:]):
+                            vi.append(comparator_dict[i])
+                        dpg.add_combo(vi, width=150, default_value=vi[0])
+                    else:
+                        dpg.add_combo(v[1:], width=150, default_value=v[1])
+
+
                 elif v[0] == "color":
+                    dpg.add_text(k,label=k)
                     dpg.add_color_picker(label=k, width=200, height=200)
 
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
@@ -154,12 +160,13 @@ def execute_sequence(query_executor):
         children = dpg.get_item_children(next)[1]
         for id in children:
             id=dpg.get_item_children(id)
+            id0=id[1][0]
             id=id[1][1]
 
-            if dpg.get_item_alias(id)=="comparator":
-                data[dpg.get_item_alias(id)] = comparator_dict_inv[dpg.get_value(id)]
+            if dpg.get_item_label(id0)=="comparator":
+                data[dpg.get_item_label(id0)] = comparator_dict_inv[dpg.get_value(id)]
             else:
-                data[dpg.get_item_alias(id)] = dpg.get_value(id)
+                data[dpg.get_item_label(id0)] = dpg.get_value(id)
 
 
 
