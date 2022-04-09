@@ -1,5 +1,7 @@
 import json
 import sys
+import json
+
 
 from RabbitMq.Query import QueryExecutor, QueryBuilder, ResultResponse
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
@@ -36,15 +38,17 @@ if __name__ == '__main__':
         params = body["params"]
 
         if "threshold" in params.keys():
-                threshold = float(params["threshold"])
+            threshold = float(params["threshold"])
         else:
             threshold = 0
         try:
             if params["unit"] == "kb":
-                    res = filter_by_KB(paths = body["paths"], reference = float(params["kb"]), comparator = params["comparator"], threshold = threshold)
-                    result = ResultResponse(200, res, SENDER)
+                res = filter_by_KB(paths=body["paths"], reference=float(params["kb"]), comparator=params["comparator"],
+                                   threshold=threshold)
+                result = ResultResponse(200, res, SENDER)
             elif params["unit"] == "pixels":
-                res = filter_by_pixels(paths = body["paths"], reference = params["pixels"], comparator = params["comparator"], threshold = threshold)
+                res = filter_by_pixels(paths=body["paths"], reference=params["pixels"], comparator=params["comparator"],
+                                       threshold=threshold)
                 result = ResultResponse(200, res, SENDER)
             else:
                 result = ResultResponse(501, [], SENDER)

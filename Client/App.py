@@ -6,7 +6,7 @@ import os
 import dearpygui.dearpygui as dpg
 
 from Logger.CustomLogFormatter import CustomLogFormatter
-from RabbitMq.Query import QueryExecutor, QueryBuilder
+from RabbitMq.Query import QueryBuilder, QueryExecutor
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("App")
@@ -152,6 +152,7 @@ def execute_sequence(query_executor):
         logger.info(" [x] Received %r" % body)
         dpg.set_value("progress_bar", query_no / seq_len)
 
+    dpg.set_value("progress_bar", 0)
     query_executor.execute(parsed, callback)
 
     # for p in parsed:

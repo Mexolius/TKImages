@@ -2,6 +2,7 @@ import os
 
 import imagesize
 
+from Utils import get_comparator
 
 def check_size_in_KB(path):
     size_in_b = os.path.getsize(path)
@@ -21,7 +22,7 @@ def filter_by_KB(paths, reference, comparator, threshold):
     filtered_paths = []
     comparator = get_comparator(comparator, threshold)
     for path in paths:
-        if comparator(reference, check_size_in_KB(path)):
+        if comparator(check_size_in_KB(path), reference):
             filtered_paths.append(path)
     return filtered_paths
 

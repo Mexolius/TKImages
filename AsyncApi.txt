@@ -28,8 +28,10 @@ Size{
 }
 
 Colors{
-    "system": rbg | hsv | cmyk
+    "system": RGB | HSV | CMYK
     "color": colorValue
+    "metric": string
+    "comparator": Comparator
     "threshold": int
 }
 

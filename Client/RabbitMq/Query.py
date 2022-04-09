@@ -103,7 +103,3 @@ class QueryExecutor:
             self.__consumer.consume(callback)
             # if GLOBAL_EXECUTE_STOP: break
             current_query += 1
-
-
-if __name__ == '__main__':
-    print('dupa')
