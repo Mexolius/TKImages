@@ -1,9 +1,17 @@
 import json
+import logging
 from abc import ABC, abstractmethod
 from typing import Sequence
 
 from . import RabbitMQClient
+from Logger.CustomLogFormatter import CustomLogFormatter
 
+logger = logging.getLogger("SimpleFilterConsumer")
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(CustomLogFormatter())
+logger.addHandler(ch)
 
 class RabbitMQMessage(ABC):
     def exchange(self):
@@ -73,8 +81,8 @@ class QueryBuilder:
 
     def build(self):
         return {
-            'Size': lambda paths, data: SizeQuery(paths, data)
-            # 'Color': lambda paths, data: SimpleQuery(paths, data, "a")
+            'Size': lambda paths, data: SizeQuery(paths, data),
+            'Colors': lambda paths, data: SimpleQuery(paths, data, "a")
             # 'Dogs'
         }[self.__query_type](self.__query_paths, self.__query_data)
 
@@ -97,7 +105,7 @@ class QueryExecutor:
         current_query = 1
         for query in queries:
             query.paths = new_paths
-            print(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
+            logger.info(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
             self.__producer.publish(query.exchange(), query.topic(), query.json())
 
             self.__consumer.consume(callback)

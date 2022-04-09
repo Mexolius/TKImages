@@ -1,5 +1,5 @@
 from enum import Enum
-from Query import Query
+from RabbitMq.Query import Query
 from typing import Tuple, List
 from colorsys import hsv_to_rgb
 

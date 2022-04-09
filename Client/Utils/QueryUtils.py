@@ -1,9 +1,18 @@
 import json
-
+import logging
 from typing import Sequence
-from Query import SizeQuery, Query
-from Color import ColorQuery
-from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+
+from ColorFilter.Color import ColorQuery
+from Logger.CustomLogFormatter import CustomLogFormatter
+from Query.Query import SizeQuery, Query
+from RabiitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+
+logger = logging.getLogger("SimpleFilterConsumer")
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(CustomLogFormatter())
+logger.addHandler(ch)
 
 
 class QueryBuilder:
@@ -49,7 +58,7 @@ class QueryExecutor:
         current_query = 1
         for query in queries:
             query.paths = new_paths
-            print(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
+            logger.info(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
             self.__producer.publish(query.exchange(), query.topic(), query.json())
 
             self.__consumer.consume(callback)

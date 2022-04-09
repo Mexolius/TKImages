@@ -1,4 +1,3 @@
-from abc import ABCMeta, abstractmethod
 from typing import Callable, Union
 
 Comparable = Union[float, int]

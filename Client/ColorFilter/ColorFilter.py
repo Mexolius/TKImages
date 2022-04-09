@@ -1,14 +1,14 @@
 import json
 
-from Query import ResultResponse
-from Color import ColorParams, ColorMetric
+from RabbitMq.Query import ResultResponse
+from . import Color
 from PIL import ImageStat, Image
-from Utils import get_comparator
+from Utils.Utils import get_comparator
 
 SERVICE_NAME = "color service"
 
 
-def get_processing_metric(metric: ColorMetric):
+def get_processing_metric(metric: Color.ColorMetric):
     return {
         "max": lambda stat: map(lambda x: x[1], stat.extrema),
         "min": lambda stat: map(lambda x: x[0], stat.extrema),
@@ -22,7 +22,7 @@ def process_request(body: str) -> ResultResponse:
     request = json.loads(body)
     paths = request['paths']
     raw_params = request['params']
-    params = ColorParams.from_object(raw_params)
+    params = Color.ColorParams.from_object(raw_params)
 
     metric = get_processing_metric(params.metric)
     comparator = get_comparator(params.comparator, params.threshold)

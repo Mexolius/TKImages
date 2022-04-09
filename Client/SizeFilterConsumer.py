@@ -1,12 +1,11 @@
-import json
 import sys
 import json
-
-
-from RabbitMq.Query import QueryExecutor, QueryBuilder, ResultResponse
-from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 import logging
+import sys
+
 from Logger.CustomLogFormatter import CustomLogFormatter
+from RabbitMq.Query import ResultResponse
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 from SizeFilter.SizeFilter import filter_by_KB, filter_by_pixels
 
 logger = logging.getLogger("SimpleFilterConsumer")
@@ -15,7 +14,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 ch.setFormatter(CustomLogFormatter())
 logger.addHandler(ch)
-
 
 SENDER = "Size"
 
