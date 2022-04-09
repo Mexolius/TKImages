@@ -62,5 +62,6 @@ class ColorQuery(Query):
     def __init__(self, paths, params):
         super().__init__(paths, params)
 
-    def topic(self):
+    @staticmethod
+    def topic():
         return 'colors'

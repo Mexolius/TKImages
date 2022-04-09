@@ -1,9 +1,8 @@
 import json
 import logging
-from abc import ABC, abstractmethod
-from typing import Sequence
 
-from . import RabbitMQClient
+from typing import Sequence
+from abc import ABC, abstractmethod
 from Logger.CustomLogFormatter import CustomLogFormatter
 
 logger = logging.getLogger("Query")
@@ -13,8 +12,10 @@ ch.setLevel(logging.DEBUG)
 ch.setFormatter(CustomLogFormatter())
 logger.addHandler(ch)
 
+
 class RabbitMQMessage(ABC):
-    def exchange(self):
+    @staticmethod
+    def exchange():
         return 'ImageFinder'
 
     @abstractmethod
@@ -41,7 +42,8 @@ class ResultResponse(RabbitMQMessage):
         self.total = len(paths)
         self.sender = sender
 
-    def topic(self):
+    @staticmethod
+    def topic():
         return 'results'
 
 
@@ -49,7 +51,8 @@ class SizeQuery(Query):
     def __init__(self, paths, params):
         super().__init__(paths, params)
 
-    def topic(self):
+    @staticmethod
+    def topic():
         return 'size'
 
 
@@ -58,56 +61,6 @@ class SimpleQuery(Query):
         params = {"data": data, "moreData": moreData}
         super().__init__(paths, params)
 
-    def topic(self):
+    @staticmethod
+    def topic():
         return 'size'
-
-
-class QueryBuilder:
-    __query_type: str
-    __query_paths: Sequence[str]
-    __query_data: dict
-
-    def data(self, data: dict):
-        self.__query_data = data
-        return self
-
-    def query_type(self, query_type: str):
-        self.__query_type = query_type
-        return self
-
-    def paths(self, paths: Sequence[str]):
-        self.__query_paths = paths
-        return self
-
-    def build(self):
-        return {
-            'Size': lambda paths, data: SizeQuery(paths, data),
-            'Colors': lambda paths, data: SimpleQuery(paths, data, "a")
-            # 'Dogs'
-        }[self.__query_type](self.__query_paths, self.__query_data)
-
-
-class QueryExecutor:
-    def __init__(self, producer: RabbitMQClient.RabbitMQProducer, consumer: RabbitMQClient.RabbitMQSyncConsumer):
-        self.__producer = producer
-        self.__consumer = consumer
-
-    def execute(self, queries: Sequence[Query], query_cb):
-        new_paths = queries[0].paths
-
-        def callback(ch, method, properties, body):
-            self.__consumer.stop_consuming()
-            nonlocal current_query
-            query_cb(body, current_query)
-            nonlocal new_paths
-            new_paths = json.loads(body)["paths"]
-
-        current_query = 1
-        for query in queries:
-            query.paths = new_paths
-            logger.info(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
-            self.__producer.publish(query.exchange(), query.topic(), query.json())
-
-            self.__consumer.consume(callback)
-            # if GLOBAL_EXECUTE_STOP: break
-            current_query += 1

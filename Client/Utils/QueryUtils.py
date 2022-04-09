@@ -4,8 +4,8 @@ from typing import Sequence
 
 from ColorFilter.Color import ColorQuery
 from Logger.CustomLogFormatter import CustomLogFormatter
-from Query.Query import SizeQuery, Query
-from RabiitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from RabbitMq.Query import SizeQuery, Query
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("QueryUtils")
 logger.setLevel(logging.DEBUG)
@@ -59,7 +59,7 @@ class QueryExecutor:
         for query in queries:
             query.paths = new_paths
             logger.info(f"sent {query.json()} to {query.topic()} @ {query.exchange()}")
-            self.__producer.publish(query.exchange(), query.topic(), query.json())
+            self.__producer.publish_rmq_message(query)
 
             self.__consumer.consume(callback)
             # if GLOBAL_EXECUTE_STOP: break
