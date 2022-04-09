@@ -4,7 +4,7 @@ import os
 
 import dearpygui.dearpygui as dpg
 
-from Query import QueryExecutor, QueryBuilder
+from QueryUtils import QueryExecutor, QueryBuilder
 from RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 # global parameters
