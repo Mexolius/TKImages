@@ -28,11 +28,18 @@ def process_request(body: str) -> ResultResponse:
     comparator = get_comparator(params.comparator, params.threshold)
 
     def is_compliant(path):
-        return all(map(
-            comparator,
-            metric(ImageStat.Stat(Image.open(path))),
-            params.color
-        ))
+        calc_metric = metric(ImageStat.Stat(Image.open(path)))
+        if len(calc_metric) > 2:
+            return all(map(
+                comparator,
+                calc_metric,
+                params.color
+            ))
+        elif len(calc_metric) == 1:
+            colors = (params.color[0] + params.color[1] + params.color[2])/3
+            return comparator(calc_metric[0], colors)
+        else:  # This is not a normal image. I refuse to return it.
+            return False
 
     result = list(filter(is_compliant, paths))
     return ResultResponse(200, result, SERVICE_NAME)

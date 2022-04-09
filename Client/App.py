@@ -229,7 +229,6 @@ if __name__ == '__main__':
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("main_window", True)
-    dpg.set_value("root_path", "C:\\Users\\ernit\\OneDrive\\Pulpit\\images")
 
     # debug
     # dpg.show_item_registry()
