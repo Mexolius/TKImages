@@ -24,7 +24,11 @@ scroll_start = []
 scroll_add = [0, 0]
 component_map = dict()
 links = dict()
-
+links_inv = dict()
+link_parent=dict()
+results=[]
+comparator_dict= {">":"greater than",">=":"greater/equal than","<":"less than","<=":"less/equal than","==":"equal"}
+comparator_dict_inv={v: k for k, v in comparator_dict.items()}
 
 class Component:
     def __init__(self, label):
@@ -70,14 +74,18 @@ def delete_nodes(sender, app_data):
 
 def link_callback(sender, app_data):
     # app_data -> (link_id1, link_id2)
-    dpg.add_node_link(app_data[0], app_data[1], parent=sender)
+    id=dpg.add_node_link(app_data[0], app_data[1], parent=sender)
     links[app_data[0]] = app_data[1]
-
+    links_inv[app_data[1]]=app_data[0]
+    link_parent[id]=(app_data[0],app_data[1])
 
 def delink_callback(sender, app_data):
     # app_data -> link_id
+    links.pop(link_parent[app_data][0])
+    links_inv.pop(link_parent[app_data][1])
+    link_parent.pop(app_data)
     dpg.delete_item(app_data)
-    links.pop(app_data)
+
 
 
 def add_node(sender, app, u):
@@ -90,11 +98,23 @@ def add_node(sender, app, u):
             # handle parameters generation
             for k, v in component.parameters.items():
                 if v[0] == "float":
-                    dpg.add_input_text(label=k, width=150)
+
+
+                    dpg.add_text(k)
+                    dpg.add_same_line(xoffset=110)
+                    dpg.add_input_text(width=150,default_value="0",tag=k)
                 elif v[0] == "vec2f":
-                    dpg.add_input_floatx(label=k, size=2, width=150)
+
+                    dpg.add_text(k)
+                    dpg.add_same_line(xoffset=110)
+                    dpg.add_input_floatx(size=2, width=150,default_value=(0,0),tag=k)
                 elif v[0] == "choice":
-                    dpg.add_combo(v[1:], label=k, width=150)
+                    if k=="comparator":
+                        for id,i in enumerate(v[1:]):
+                            v[id+1]=comparator_dict[i]
+                    dpg.add_text(k)
+                    dpg.add_same_line(xoffset=110)
+                    dpg.add_combo(v[1:],width=150,default_value=v[1],tag=k)
                 elif v[0] == "color":
                     dpg.add_color_picker(label=k, width=200, height=200)
 
@@ -133,7 +153,15 @@ def execute_sequence(query_executor):
         data = {}
         children = dpg.get_item_children(next)[1]
         for id in children:
-            data[dpg.get_item_label(id)] = dpg.get_value(id)
+            id=dpg.get_item_children(id)
+            id=id[1][1]
+
+            if dpg.get_item_alias(id)=="comparator":
+                data[dpg.get_item_alias(id)] = comparator_dict_inv[dpg.get_value(id)]
+            else:
+                data[dpg.get_item_alias(id)] = dpg.get_value(id)
+
+
 
         value = (QueryBuilder()
                  .query_type(dpg.get_item_label(dpg.get_item_parent(next)))
@@ -151,6 +179,18 @@ def execute_sequence(query_executor):
     def callback(body, query_no):
         logger.info(" [x] Received %r" % body)
         dpg.set_value("progress_bar", query_no / seq_len)
+
+        dpg.delete_item("results",children_only=True)
+        dpg.delete_item("texture_container",children_only=True)
+        body_py=json.loads(body)
+        for item in body_py["paths"]:
+            try:
+                width, height, channels, data = dpg.load_image(item)
+                id=dpg.add_static_texture(width, height, data,parent="texture_container")
+                dpg.add_image(width=100*(width/height),height=100,texture_tag=id,parent="results")
+            except TypeError:
+                continue
+
 
     dpg.set_value("progress_bar", 0)
     query_executor.execute(parsed, callback)
@@ -193,6 +233,7 @@ if __name__ == '__main__':
     logger.info("Starting App...")
     dpg.create_context()
 
+    dpg.add_texture_registry(label="texture_container", tag="texture_container")
     with dpg.font_registry():
         default_font = dpg.add_font("Fonts/Montserrat-Light.otf", font_size, tag="font")
 
@@ -220,6 +261,15 @@ if __name__ == '__main__':
             dpg.add_progress_bar(tag="progress_bar")
         dpg.add_text(tag="console", default_value="Error message: 0", color=(0, 255, 0))
         dpg.add_text("Ctrl: remove link\nRMB: node list\nDEL: delete selected")
+        with dpg.collapsing_header(label="Results"):
+            with dpg.child_window(height=150,horizontal_scrollbar=True):
+                with dpg.group(tag="results",horizontal=True):
+                    pass
+
+
+
+
+
         with dpg.window(tag="popup", popup=True, show=False):
             dpg.add_text("Node list")
             dpg.add_separator()
