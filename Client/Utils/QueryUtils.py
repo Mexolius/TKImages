@@ -7,7 +7,7 @@ from Logger.CustomLogFormatter import CustomLogFormatter
 from Query.Query import SizeQuery, Query
 from RabiitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
-logger = logging.getLogger("SimpleFilterConsumer")
+logger = logging.getLogger("QueryUtils")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

@@ -6,7 +6,7 @@ from typing import Sequence
 from . import RabbitMQClient
 from Logger.CustomLogFormatter import CustomLogFormatter
 
-logger = logging.getLogger("SimpleFilterConsumer")
+logger = logging.getLogger("Query")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

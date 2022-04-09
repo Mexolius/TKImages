@@ -6,7 +6,7 @@ from RabbitMq.Query import ResultResponse
 import traceback
 import logging
 
-logger = logging.getLogger("SimpleFilterConsumer")
+logger = logging.getLogger("ColorFilterConsumer")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

@@ -8,7 +8,7 @@ from RabbitMq.Query import ResultResponse
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 from SizeFilter.SizeFilter import filter_by_KB, filter_by_pixels
 
-logger = logging.getLogger("SimpleFilterConsumer")
+logger = logging.getLogger("SizeFilterConsumer")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
