@@ -24,10 +24,10 @@ if __name__ == '__main__':
     def callback(ch, method, properties, body):
         try:
             result = process_request(body)
-            producer.publish(result.exchange(), result.topic(), result.json())
+            producer.publish_rmq_message(result)
         except Exception as e:
             logging.error(traceback.format_exc())
             resp = ResultResponse(500, [], 'color_service')
-            producer.publish(resp.exchange(), resp.topic(), resp.json())
+            producer.publish_rmq_message(resp)
 
     consumer.consume(callback)
