@@ -100,31 +100,30 @@ def add_node(sender, app, u):
             # handle parameters generation
             for k, v in component.parameters.items():
                 if v[0] == "float":
-
-                    dpg.add_text(k, label=k)
-                    dpg.add_same_line(xoffset=110)
-                    dpg.add_input_text(width=150, default_value="0")
+                    with dpg.group(xoffset=120, horizontal=True):
+                        dpg.add_text(k, label=k)
+                        dpg.add_input_text(width=150, default_value="0")
                 elif v[0] == "vec2f":
 
-                    dpg.add_text(k, label=k)
-                    dpg.add_same_line(xoffset=110)
-                    dpg.add_input_floatx(size=2, width=150, default_value=(0, 0))
+                    with dpg.group(xoffset=120, horizontal=True):
+                        dpg.add_text(k, label=k)
+                        dpg.add_input_floatx(size=2, width=150, default_value=(0, 0))
                 elif v[0] == "choice":
-
-                    dpg.add_text(k, label=k)
-                    dpg.add_same_line(xoffset=110)
-                    if k == "comparator":
-                        vi = []
-                        for id, i in enumerate(v[1:]):
-                            vi.append(comparator_dict[i])
-                        dpg.add_combo(vi, width=150, default_value=vi[0])
-                    else:
-                        dpg.add_combo(v[1:], width=150, default_value=v[1])
+                    with dpg.group(xoffset=120, horizontal=True):
+                        dpg.add_text(k, label=k)
+                        if k == "comparator":
+                            vi = []
+                            for id, i in enumerate(v[1:]):
+                                vi.append(comparator_dict[i])
+                            dpg.add_combo(vi, width=150, default_value=vi[0])
+                        else:
+                            dpg.add_combo(v[1:], width=150, default_value=v[1])
 
 
                 elif v[0] == "color":
-                    dpg.add_text(k, label=k)
-                    dpg.add_color_picker(label=k, width=200, height=200)
+                    with dpg.group():
+                        dpg.add_text(k, label=k)
+                        dpg.add_color_picker(width=200, height=200)
 
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
             pass
