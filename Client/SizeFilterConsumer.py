@@ -18,15 +18,10 @@ logger.addHandler(ch)
 
 SERVICE_NAME = "size_service"
 
-
-def send_result(prod, result):
-    prod.publish(result.exchange(), result.topic(), result.json())
-
-
 if __name__ == '__main__':
     logger.info("Starting SizeFilterConsumer")
-    consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.size', 'myuser', 'mypassword')
-    producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
+    consumer = RabbitMQSyncConsumer.from_config('size')
+    producer = RabbitMQProducer.from_config()
     logger.info("SizeFilterConsumer started successfully")
 
 
@@ -39,5 +34,4 @@ if __name__ == '__main__':
             logging.error(traceback.format_exc())
             resp = ResultResponse(500, [], SERVICE_NAME)          
         producer.publish(resp.exchange(), resp.topic(), resp.json())
-
     consumer.consume(callback)
