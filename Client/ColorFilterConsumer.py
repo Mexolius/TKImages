@@ -16,8 +16,8 @@ logger.addHandler(ch)
 
 if __name__ == '__main__':
     logger.info("Starting ColorFilterConsumer")
-    consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.colors', 'myuser', 'mypassword')
-    producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
+    consumer = RabbitMQSyncConsumer.from_config('colors')
+    producer = RabbitMQProducer.from_config()
     logger.info("ColorFilterConsumer started successfully")
 
 
