@@ -32,6 +32,7 @@ if __name__ == '__main__':
             resp = ResultResponse(200, result, SERVICE_NAME)
         except Exception as e:
             logging.error(traceback.format_exc())
-            resp = ResultResponse(500, [], SERVICE_NAME)          
-        producer.publish(resp.exchange(), resp.topic(), resp.json())
+            resp = ResultResponse(500, [], SERVICE_NAME)  
+        producer.publish_rmq_message(resp)
+    
     consumer.consume(callback)
