@@ -57,6 +57,15 @@ class SizeQuery(Query):
         return 'size'
 
 
+class DogsQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    @staticmethod
+    def topic():
+        return 'dogs_breeds'
+
+
 class SimpleQuery(Query):
     def __init__(self, paths: Sequence[str], data, moreData):
         params = {"data": data, "moreData": moreData}

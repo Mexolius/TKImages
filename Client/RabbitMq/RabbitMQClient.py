@@ -39,7 +39,7 @@ class RabbitMQProducer(RabbitMQConnection):
         )
 
     def __init__(self, server, port, username, password):
-        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port)
+        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port, heartbeat = 300)
         self._connection = pika.BlockingConnection(params)
         self._channel = self._connection.channel()
 
@@ -70,7 +70,7 @@ class RabbitMQConsumer(RabbitMQConnection, ABC):
         )
 
     def __init__(self, server, port, exchange, queue, username, password):
-        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port)
+        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port, heartbeat = 300)
         self._connection = pika.BlockingConnection(params)
         self._channel = self._connection.channel()
         self._exchange = exchange

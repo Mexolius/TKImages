@@ -14,5 +14,9 @@
     "metric": ["choice","min","max","mean","median","rms"],
     "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
+  },
+
+  "Dogs": {
+    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer"]
   }
 }
