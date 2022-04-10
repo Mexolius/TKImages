@@ -18,8 +18,9 @@ class RabbitMQMessage(ABC):
     def exchange():
         return 'ImageFinder'
 
+    @staticmethod
     @abstractmethod
-    def topic(self):
+    def topic():
         pass
 
     def json(self):
