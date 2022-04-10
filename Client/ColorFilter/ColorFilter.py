@@ -28,7 +28,7 @@ def process_request(body: str) -> ResultResponse:
     comparator = get_comparator(params.comparator, params.threshold)
 
     def is_compliant(path):
-        calc_metric = metric(ImageStat.Stat(Image.open(path)))
+        calc_metric = list(metric(ImageStat.Stat(Image.open(path))))
         if len(calc_metric) > 2:
             return all(map(
                 comparator,
