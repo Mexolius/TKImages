@@ -3,7 +3,7 @@
     "unit": ["choice","pixels","kb","cm"],
     "pixels":["vec2f"],
     "kb": ["float"],
-    "cm": ["float"],
+    "cm": ["vec2f"],
     "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
   },
