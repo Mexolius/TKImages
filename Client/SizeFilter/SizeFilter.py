@@ -58,7 +58,7 @@ def filter_by_cm(paths, reference, comparator, threshold):
 
 
 def get_filter_and_refernce(params):
-    return {"kb": (check_size_in_KB, float(params["kb"]) if 'kb' in params else 0),
+    return {"kb": (filter_by_KB, float(params["kb"]) if 'kb' in params else 0),
             "pixels": (filter_by_pixels, params["pixels"] if 'pixels' in params else 0),
             "cm": (filter_by_cm, params["cm"] if 'cm' in params else 0)
             }[params["unit"]]
