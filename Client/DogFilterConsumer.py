@@ -1,13 +1,10 @@
-import sys
-import json
 import logging
 import traceback
-import sys
 
+from DogsFilter.DogsBreedFilter import process_request
 from Logger.CustomLogFormatter import CustomLogFormatter
 from RabbitMq.Query import ResultResponse
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
-from DogsFilter.DogsBreedFilter import process_request
 
 logger = logging.getLogger("DogFilterConsumer")
 logger.setLevel(logging.DEBUG)
@@ -32,8 +29,9 @@ if __name__ == '__main__':
             resp = ResultResponse(200, result, SERVICE_NAME)
         except Exception as e:
             logging.error(traceback.format_exc())
-            resp = ResultResponse(500, [], SERVICE_NAME)  
+            resp = ResultResponse(500, [], SERVICE_NAME)
         producer.publish_rmq_message(resp)
         logger.info("DogFilterConsumer Finished Processing")
-    
+
+
     consumer.consume(callback)

@@ -17,6 +17,6 @@
   },
 
   "Dogs": {
-    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer"]
+    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer", "corgi", "golden retriever"]
   }
 }
