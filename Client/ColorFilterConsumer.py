@@ -22,6 +22,7 @@ if __name__ == '__main__':
 
 
     def callback(ch, method, properties, body):
+        logger.info(" [x] Received %r" % body)
         try:
             result = process_request(body)
             producer.publish_rmq_message(result)
