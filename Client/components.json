@@ -3,7 +3,7 @@
     "unit": ["choice","pixels","kb","cm"],
     "pixels":["vec2f"],
     "kb": ["float"],
-    "cm": ["float"],
+    "cm": ["vec2f"],
     "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
   },
@@ -14,5 +14,9 @@
     "metric": ["choice","min","max","mean","median","rms"],
     "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
+  },
+
+  "Dogs": {
+    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer", "corgi", "golden retriever"]
   }
 }
