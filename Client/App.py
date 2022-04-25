@@ -6,7 +6,7 @@ import os
 import dearpygui.dearpygui as dpg
 
 from Logger.CustomLogFormatter import CustomLogFormatter
-from RabbitMq.Query import QueryBuilder, QueryExecutor
+from Utils.QueryUtils import QueryBuilder, QueryExecutor
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("App")
@@ -276,9 +276,8 @@ if __name__ == '__main__':
         dpg.add_mouse_release_handler(callback=scroll_end, button=2)
         dpg.add_key_press_handler(key=46, callback=delete_nodes)
 
-    rmq_consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.results', 'myuser',
-                                        'mypassword')
-    rmq_producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
+    rmq_consumer = RabbitMQSyncConsumer.from_config('results')
+    rmq_producer = RabbitMQProducer.from_config()
     query_executor = QueryExecutor(rmq_producer, rmq_consumer)
 
 

@@ -16,18 +16,19 @@ logger.addHandler(ch)
 
 if __name__ == '__main__':
     logger.info("Starting ColorFilterConsumer")
-    consumer = RabbitMQSyncConsumer('localhost', 5672, 'ImageFinder', 'image_finder.colors', 'myuser', 'mypassword')
-    producer = RabbitMQProducer('localhost', 5672, 'myuser', 'mypassword')
+    consumer = RabbitMQSyncConsumer.from_config('colors')
+    producer = RabbitMQProducer.from_config()
     logger.info("ColorFilterConsumer started successfully")
 
 
     def callback(ch, method, properties, body):
+        logger.info(" [x] Received %r" % body)
         try:
             result = process_request(body)
-            producer.publish(result.exchange(), result.topic(), result.json())
+            producer.publish_rmq_message(result)
         except Exception as e:
             logging.error(traceback.format_exc())
             resp = ResultResponse(500, [], 'color_service')
-            producer.publish(resp.exchange(), resp.topic(), resp.json())
+            producer.publish_rmq_message(resp)
 
     consumer.consume(callback)
