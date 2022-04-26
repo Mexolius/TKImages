@@ -1,11 +1,11 @@
 {
   "Size":{
-    "unit": ["choice","pixels","kb","cm"],
-    "pixels":["vec2f"],
-    "kb": ["float"],
-    "cm": ["vec2f"],
-    "comparator": ["choice",">",">=","<","<=","=="],
-    "threshold": ["float"]
+    "unit": ["choice_propagate","pixels","kb","cm"],
+    "pixels":["vec2f","pixels"],
+    "kb": ["float","kb"],
+    "cm": ["vec2f","cm"],
+    "comparator": ["choice_propagate",">",">=","<","<=","=="],
+    "threshold": ["float","equal"]
   },
 
   "Colors": {
