@@ -94,9 +94,12 @@ def choice_propagate(sender, app, u):
     component_dict = u[1][1].parameters
     children = dpg.get_item_children(dpg.get_item_children(u[0])[1][0])[1]
     for group in children:
-        text = dpg.get_item_label(dpg.get_item_children(group)[1][0])
+        field=dpg.get_item_children(group)[1]
+        text = dpg.get_item_label(field[0])
         v = component_dict[text]
-        if v[0] == "choice_propagate" or v[1] == "shared":
+        if v[0] == "choice_propagate" and group>sender:
+             break
+        if v[0] == "choice_propagate" or v[1] == "shared" or group<sender:
             continue
         elif (v[1] != app):
             dpg.hide_item(group)
@@ -124,7 +127,14 @@ def add_node(sender, app, u):
                 if v_filtered[0] == "choice_propagate":
                     with dpg.group(xoffset=120, horizontal=True):
                         dpg.add_text(k, label=k)
-                        dpg.add_combo(v_filtered[1:], width=150, default_value=v_filtered[2], user_data=[node_id, u],
+                        if k == "comparator":
+                            vi = []
+                            for id, i in enumerate(v_filtered[1:]):
+                                vi.append(comparator_dict[i])
+                            dpg.add_combo(vi, width=150, default_value=vi[0], user_data=[node_id, u],
+                                      callback=choice_propagate)
+                        else:
+                            dpg.add_combo(v_filtered[1:], width=150, default_value=v_filtered[2], user_data=[node_id, u],
                                       callback=choice_propagate)
                         capture = v_filtered[2]
                 elif v_filtered[0] == "float":

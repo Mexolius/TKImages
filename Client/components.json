@@ -4,8 +4,8 @@
     "pixels":["vec2f","pixels"],
     "kb": ["float","kb"],
     "cm": ["vec2f","cm"],
-    "comparator": ["choice","shared",">",">=","<","<=","=="],
-    "threshold": ["float","shared"]
+    "comparator": ["choice_propagate",">",">=","<","<=","=="],
+    "threshold": ["float","equal"]
   },
 
   "Colors": {
