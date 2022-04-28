@@ -66,6 +66,16 @@ class DogsQuery(Query):
         return 'dogs_breeds'
 
 
+class SimilarityQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    @staticmethod
+    def topic():
+        return 'similarity'
+
+
+
 class SimpleQuery(Query):
     def __init__(self, paths: Sequence[str], data, moreData):
         params = {"data": data, "moreData": moreData}

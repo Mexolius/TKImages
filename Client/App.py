@@ -162,6 +162,11 @@ def add_node(sender, app, u):
                         dpg.add_text(k, label=k)
                         dpg.add_color_picker(width=200, height=200)
 
+                elif v_filtered[0] == "string":
+                    with dpg.group(xoffset=120, horizontal=True, show=show_input):
+                        dpg.add_text(k, label=k)
+                        dpg.add_input_text(width=150)
+
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
             pass
     return node_id
