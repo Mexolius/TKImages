@@ -123,7 +123,9 @@ def add_node(sender, app, u):
             for k, v in component.parameters.items():
                 v_filtered = v
                 show_input = True
+
                 if capture != "" and v[0] != "choice_propagate":
+
                     clause = v[1]
                     v_filtered = v[:1] + v[2:]
                     if clause != capture and clause != "shared":
