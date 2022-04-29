@@ -94,17 +94,21 @@ def choice_propagate(sender, app, u):
     component_dict = u[1][1].parameters
     children = dpg.get_item_children(dpg.get_item_children(u[0])[1][0])[1]
     for group in children:
-        field=dpg.get_item_children(group)[1]
+        field = dpg.get_item_children(group)[1]
         text = dpg.get_item_label(field[0])
         v = component_dict[text]
-        if v[0] == "choice_propagate" and group>sender:
-             break
-        if v[0] == "choice_propagate" or v[1] == "shared" or group<sender:
+        if v[0] == "choice_propagate" and group > sender:
+            break
+        if v[0] == "choice_propagate" or v[1] == "shared" or group < sender:
             continue
         elif (v[1] != app):
             dpg.hide_item(group)
         else:
             dpg.show_item(group)
+
+
+def file_selector_callback(s, a, u):
+    dpg.set_value(u, list(a["selections"].items())[0][1])
 
 
 def add_node(sender, app, u):
@@ -119,7 +123,7 @@ def add_node(sender, app, u):
             for k, v in component.parameters.items():
                 v_filtered = v
                 show_input = True
-                if capture != "":
+                if capture != "" and v[0] != "choice_propagate":
                     clause = v[1]
                     v_filtered = v[:1] + v[2:]
                     if clause != capture and clause != "shared":
@@ -132,10 +136,11 @@ def add_node(sender, app, u):
                             for id, i in enumerate(v_filtered[1:]):
                                 vi.append(comparator_dict[i])
                             dpg.add_combo(vi, width=150, default_value=vi[0], user_data=[node_id, u],
-                                      callback=choice_propagate)
+                                          callback=choice_propagate)
                         else:
-                            dpg.add_combo(v_filtered[1:], width=150, default_value=v_filtered[2], user_data=[node_id, u],
-                                      callback=choice_propagate)
+                            dpg.add_combo(v_filtered[1:], width=150, default_value=v_filtered[2],
+                                          user_data=[node_id, u],
+                                          callback=choice_propagate)
                         capture = v_filtered[2]
                 elif v_filtered[0] == "float":
                     with dpg.group(xoffset=120, horizontal=True, show=show_input):
@@ -162,10 +167,16 @@ def add_node(sender, app, u):
                         dpg.add_text(k, label=k)
                         dpg.add_color_picker(width=200, height=200)
 
-                elif v_filtered[0] == "string":
+                elif v_filtered[0] == "file_selector":
                     with dpg.group(xoffset=120, horizontal=True, show=show_input):
                         dpg.add_text(k, label=k)
-                        dpg.add_input_text(width=150)
+                        id_path = dpg.add_input_text(width=150)
+
+                        with dpg.file_dialog(label="File Dialog", width=400, height=500, show=False, user_data=id_path,
+                                             callback=file_selector_callback):
+                            dpg.add_file_extension(".*", color=(255, 255, 255, 255))
+                        dpg.add_button(label="File Selector", user_data=dpg.last_container(),
+                                       callback=lambda s, a, u: dpg.configure_item(u, show=True),indent=280)
 
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
             pass

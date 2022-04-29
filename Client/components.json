@@ -21,7 +21,8 @@
   },
 
   "Similarity": {
-    "path": ["string","Path"],
+    "path": ["file_selector","Path"],
     "percent": ["float", "Similarity percent"]
   }
+
 }
