@@ -4,7 +4,7 @@ from typing import Sequence
 
 from ColorFilter.Color import ColorQuery
 from Logger.CustomLogFormatter import CustomLogFormatter
-from RabbitMq.Query import SizeQuery, Query, DogsQuery
+from RabbitMq.Query import SizeQuery, Query, DogsQuery, SimilarityQuery
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("QueryUtils")
@@ -36,7 +36,8 @@ class QueryBuilder:
         return {
             'Size': lambda paths, data: SizeQuery(paths, data),
             'Colors': lambda paths, data: ColorQuery(paths, data),
-            'Dogs' : lambda paths, data: DogsQuery(paths, data)
+            'Dogs': lambda paths, data: DogsQuery(paths, data),
+            'Similarity': lambda paths, data: SimilarityQuery(paths, data)
         }[self.__query_type](self.__query_paths, self.__query_data)
 
 

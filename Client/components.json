@@ -18,5 +18,11 @@
 
   "Dogs": {
     "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer", "corgi", "golden retriever"]
+  },
+
+  "Similarity": {
+    "path": ["file_selector","Path"],
+    "percent": ["float", "Similarity percent"]
   }
+
 }
