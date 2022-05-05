@@ -11,7 +11,7 @@
   "Colors": {
     "color": ["color"],
     "system": ["choice","RGB","HSV","CMYK"],
-    "metric": ["choice","min","max","mean","median","rms"],
+    "metric": ["choice","min","max","mean","median","rms","percentage"],
     "comparator": ["choice",">",">=","<","<=","=="],
     "threshold": ["float"]
   },

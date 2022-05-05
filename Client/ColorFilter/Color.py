@@ -18,6 +18,7 @@ class ColorMetric(Enum):
     mean = 3
     median = 4
     rms = 5
+    percentage = 6
 
 
 class ColorParams:
