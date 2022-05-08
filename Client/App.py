@@ -99,12 +99,12 @@ def choice_propagate(sender, app, u):
         v = component_dict[text]
         if v[0] == "choice_propagate" and group > sender:
             break
-        if v[0] == "choice_propagate" or v[1] == "shared" or group < sender:
+        if v[0] == "choice_propagate" or (len(v) > 1 and v[1] == "shared") or group < sender:
             continue
-        elif (v[1] != app):
-            dpg.hide_item(group)
-        else:
+        elif app in v[1:]:
             dpg.show_item(group)
+        else:
+            dpg.hide_item(group)
 
 
 def file_selector_callback(s, a, u):
@@ -178,7 +178,7 @@ def add_node(sender, app, u):
                                              callback=file_selector_callback):
                             dpg.add_file_extension(".*", color=(255, 255, 255, 255))
                         dpg.add_button(label="File Selector", user_data=dpg.last_container(),
-                                       callback=lambda s, a, u: dpg.configure_item(u, show=True),indent=280)
+                                       callback=lambda s, a, u: dpg.configure_item(u, show=True), indent=280)
 
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
             pass

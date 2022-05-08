@@ -11,9 +11,11 @@
   "Colors": {
     "color": ["color"],
     "system": ["choice","RGB","HSV","CMYK"],
-    "metric": ["choice","min","max","mean","median","rms","percentage"],
-    "comparator": ["choice",">",">=","<","<=","=="],
-    "threshold": ["float"]
+    "metric": ["choice_propagate","min","max","mean","median","rms","percentage"],
+    "pixel tolerance": ["float","percentage"],
+    "% threshold": ["float","percentage"],
+    "comparator": ["choice_propagate",">",">=","<","<=","=="],
+    "threshold": ["float","equal"]
   },
 
   "Dogs": {

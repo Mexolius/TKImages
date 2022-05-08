@@ -59,14 +59,12 @@ def process_request(body: str) -> ResultResponse:
             data = list(image.getdata())
             w, h = image.size
             total = w * h
-            compliant_pixels = list(filter(
-                lambda x: x is True,
-                [metric(params.color, j) for j in data]
-            ))
+            bound_metric = metric(data[0], params.color, params.tolerance)
+            compliant_pixels = list(filter(lambda x: bound_metric(x), data))
 
             percent = 100*len(compliant_pixels)/total
             print(percent)
-            return comparator(percent, params.threshold)
+            return comparator(percent, params.percent_threshold)
 
     else:
         def is_compliant(_):
