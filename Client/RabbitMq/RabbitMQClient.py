@@ -55,20 +55,7 @@ class RabbitMQConsumer(RabbitMQConnection, ABC):
     _exchange: str
     _queue: str
 
-    @staticmethod
-    def from_config(queue_name: str):
-        config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read('config.ini')
-        rabbit = config['RABBITMQ']
 
-        return RabbitMQSyncConsumer(
-            rabbit.get('address'),
-            rabbit.get('port'),
-            rabbit.get('exchange'),
-            config.get('QUEUES', queue_name),
-            rabbit.get('username'),
-            rabbit.get('password'),
-        )
 
     def __init__(self, server, port, exchange, queue, username, password):
         params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port, heartbeat = 300)
@@ -85,6 +72,20 @@ class RabbitMQConsumer(RabbitMQConnection, ABC):
 
 
 class RabbitMQSyncConsumer(RabbitMQConsumer):
+    @staticmethod
+    def from_config(queue_name: str):
+        config = ConfigParser(interpolation=ExtendedInterpolation())
+        config.read('config.ini')
+        rabbit = config['RABBITMQ']
+
+        return RabbitMQSyncConsumer(
+            rabbit.get('address'),
+            rabbit.get('port'),
+            rabbit.get('exchange'),
+            config.get('QUEUES', queue_name),
+            rabbit.get('username'),
+            rabbit.get('password'),
+        )
 
     def consume(self, callback):
         self._channel.basic_consume(queue=self._queue, on_message_callback=callback, auto_ack=True)
@@ -93,14 +94,32 @@ class RabbitMQSyncConsumer(RabbitMQConsumer):
 
 class RabbitMQAsyncConsumer(RabbitMQConsumer):
 
+    @staticmethod
+    def from_config(queue_name: str):
+        config = ConfigParser(interpolation=ExtendedInterpolation())
+        config.read('config.ini')
+        rabbit = config['RABBITMQ']
+
+        return RabbitMQAsyncConsumer(
+            rabbit.get('address'),
+            rabbit.get('port'),
+            rabbit.get('exchange'),
+            config.get('QUEUES', queue_name),
+            rabbit.get('username'),
+            rabbit.get('password'),
+        )
+
     def consume(self, callback):
         self._channel.basic_consume(
             queue=self._queue,
-            on_message_callback=callback,
-            auto_ack=True)
+            on_message_callback=callback)
 
         def start_self():
             self._channel.start_consuming()
 
         consumer_thread = threading.Thread(target=start_self)
+        consumer_thread.daemon = True
         consumer_thread.start()
+
+    def ack(self, tag):
+        self._channel.basic_ack(tag)

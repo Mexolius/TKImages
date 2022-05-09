@@ -48,6 +48,24 @@ class ResultResponse(RabbitMQMessage):
         return 'results'
 
 
+class HealthRequestMessage(RabbitMQMessage):
+    def __init__(self, service_name):
+        self.service_name = service_name
+
+    @staticmethod
+    def topic():
+        return 'health'
+
+
+class HealthResponseMessage(RabbitMQMessage):
+    def __init__(self, service_name):
+        self.service_name = service_name
+
+    @staticmethod
+    def topic():
+        return 'health_response'
+
+
 class SizeQuery(Query):
     def __init__(self, paths, params):
         super().__init__(paths, params)
@@ -81,7 +99,6 @@ class FacesQuery(Query):
     @staticmethod
     def topic():
         return 'faces_smiles'
-
 
 
 class SimpleQuery(Query):
