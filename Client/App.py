@@ -46,6 +46,7 @@ online_color = (0, 255, 0)
 offline_color = (255, 0, 0)
 status_circle_radius = 5
 status_separation = 30
+status_check_interval = 2
 
 comparator_dict = {">": "greater than", ">=": "greater/equal than", "<": "less than", "<=": "less/equal than",
                    "==": "equal"}
@@ -347,7 +348,7 @@ def clear_error():
 if __name__ == '__main__':
     logger.info("Starting App...")
     setup_health_consumer()
-    setup_health_sender_thread(2)
+    setup_health_sender_thread(status_check_interval)
     dpg.create_context()
 
     dpg.add_texture_registry(label="texture_container", tag="texture_container")
