@@ -18,18 +18,29 @@ class ColorMetric(Enum):
     mean = 3
     median = 4
     rms = 5
+    percentage = 6
 
 
 class ColorParams:
     __CMYK_SCALE = 100
     __RGB_SCALE = 255
 
-    def __init__(self, system: ColorSystem, color: Color, metric: ColorMetric, comparator: str, threshold: float):
+    def __init__(self,
+                 system: ColorSystem,
+                 color: Color,
+                 metric: ColorMetric,
+                 comparator: str,
+                 threshold: float,
+                 percent_threshold: float,
+                 tolerance: float
+                 ):
         self.system = system  # this field stays for consistency
         self.color = color
         self.metric = metric
         self.comparator = comparator
         self.threshold = threshold
+        self.percent_threshold = percent_threshold
+        self.tolerance = tolerance
 
     @staticmethod
     def from_object(obj: dict):
@@ -38,7 +49,9 @@ class ColorParams:
         metric = ColorMetric[obj['metric']]
         comparator = obj['comparator'] if 'comparator' in obj else ''
         threshold = float(obj['threshold']) if 'threshold' in obj else 0
-        return ColorParams(system, color, metric, comparator, threshold)
+        percent_threshold = float(obj['% threshold']) if '% threshold' in obj else 0
+        tolerance = float(obj['pixel tolerance']) if 'pixel tolerance' in obj else 0
+        return ColorParams(system, color, metric, comparator, threshold, percent_threshold, tolerance)
 
     # color_repr is either a list of 3 or 4 floats
     @staticmethod

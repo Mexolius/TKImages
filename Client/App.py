@@ -150,7 +150,7 @@ def choice_propagate(sender, app, u):
         v = component_dict[text]
         if v[0] == "choice_propagate" and group > sender:
             break
-        if v[0] == "choice_propagate" or v[1] == "shared" or group < sender:
+        if v[0] == "choice_propagate" or (len(v) > 1 and v[1] == "shared") or group < sender:
             continue
         elif (v[1] not in app):
             dpg.hide_item(group)
