@@ -1,13 +1,11 @@
-import sys
-import json
 import logging
 import traceback
-import sys
 
 from Logger.CustomLogFormatter import CustomLogFormatter
 from RabbitMq.Query import ResultResponse
-from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer, RabbitMQAsyncConsumer
 from SizeFilter.SizeFilter import process_request
+from Utils.Utils import setup_health_consumer
 
 logger = logging.getLogger("SizeFilterConsumer")
 logger.setLevel(logging.DEBUG)
@@ -22,7 +20,12 @@ if __name__ == '__main__':
     logger.info("Starting SizeFilterConsumer")
     consumer = RabbitMQSyncConsumer.from_config('size')
     producer = RabbitMQProducer.from_config()
+    health_consumer = RabbitMQAsyncConsumer.from_config('health')
     logger.info("SizeFilterConsumer started successfully")
+
+    logger.info("Starting HealthConsumer")
+    setup_health_consumer(SERVICE_NAME, producer, health_consumer)
+    logger.info("HealthConsumer started successfully")
 
 
     def callback(ch, method, properties, body):
@@ -32,7 +35,8 @@ if __name__ == '__main__':
             resp = ResultResponse(200, result, SERVICE_NAME)
         except Exception as e:
             logging.error(traceback.format_exc())
-            resp = ResultResponse(500, [], SERVICE_NAME)  
+            resp = ResultResponse(500, [], SERVICE_NAME)
         producer.publish_rmq_message(resp)
-    
+
+
     consumer.consume(callback)

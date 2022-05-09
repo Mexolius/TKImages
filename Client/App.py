@@ -2,12 +2,15 @@ import glob
 import json
 import logging
 import os
+import threading
+from time import sleep
 
 import dearpygui.dearpygui as dpg
 
 from Logger.CustomLogFormatter import CustomLogFormatter
+from RabbitMq.Query import HealthRequestMessage
 from Utils.QueryUtils import QueryBuilder, QueryExecutor
-from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer, RabbitMQAsyncConsumer
 
 logger = logging.getLogger("App")
 logger.setLevel(logging.DEBUG)
@@ -27,9 +30,57 @@ links = dict()
 links_inv = dict()
 link_parent = dict()
 results = []
+
+# Health states:
+# -1 offline
+# 0 pending
+# 1 online
+health_dict = {
+    'size_service': -1,
+    'color_service': -1,
+    'dog_service': -1,
+    'faces_service': -1,
+    'similarity_service': -1,
+}
+online_color = (0, 255, 0)
+offline_color = (255, 0, 0)
+status_circle_radius = 5
+status_separation = 30
+status_check_interval = 2
+
 comparator_dict = {">": "greater than", ">=": "greater/equal than", "<": "less than", "<=": "less/equal than",
                    "==": "equal"}
 comparator_dict_inv = {v: k for k, v in comparator_dict.items()}
+
+
+def setup_health_consumer():
+    health_consumer = RabbitMQAsyncConsumer.from_config('health_response')
+
+    def health_callback(ch, method, properties, body):
+        s_name = json.loads(body)['service_name']
+        if s_name in health_dict:
+            health_dict[s_name] = 1
+        health_consumer.ack(method.delivery_tag)
+
+    health_consumer.consume(health_callback)
+
+
+def setup_health_sender_thread(interval: float):
+    def send_health_beat():
+        producer = RabbitMQProducer.from_config()
+
+        while True:
+            sleep(interval)
+            for k in health_dict.keys():
+                producer.publish_rmq_message(HealthRequestMessage(k))
+                if health_dict[k] > -1:
+                    dpg.configure_item(k, fill=online_color)
+                    health_dict[k] -= 1
+                else:
+                    dpg.configure_item(k, fill=offline_color)
+
+    producer_thread = threading.Thread(target=send_health_beat)
+    producer_thread.start()
 
 
 class Component:
@@ -176,7 +227,7 @@ def add_node(sender, app, u):
                                              callback=file_selector_callback):
                             dpg.add_file_extension(".*", color=(255, 255, 255, 255))
                         dpg.add_button(label="File Selector", user_data=dpg.last_container(),
-                                       callback=lambda s, a, u: dpg.configure_item(u, show=True),indent=280)
+                                       callback=lambda s, a, u: dpg.configure_item(u, show=True), indent=280)
 
         with dpg.node_attribute(attribute_type=dpg.mvNode_Attr_Output):
             pass
@@ -273,6 +324,10 @@ def execute_sequence(query_executor):
     # print(parsed)
 
 
+def draw_status(pos, tag):
+    dpg.draw_circle((10, pos), status_circle_radius, thickness=1, fill=offline_color, tag=tag)
+
+
 # todo
 def cancel_execution():
     pass
@@ -290,6 +345,8 @@ def clear_error():
 
 if __name__ == '__main__':
     logger.info("Starting App...")
+    setup_health_consumer()
+    setup_health_sender_thread(status_check_interval)
     dpg.create_context()
 
     dpg.add_texture_registry(label="texture_container", tag="texture_container")
@@ -323,6 +380,15 @@ if __name__ == '__main__':
             with dpg.child_window(height=150, horizontal_scrollbar=True):
                 with dpg.group(tag="results", horizontal=True):
                     pass
+
+        with dpg.collapsing_header(label="Status"):
+            with dpg.group(horizontal=True):
+                with dpg.group():
+                    for k in health_dict.keys():
+                        dpg.add_text(k)
+                with dpg.drawlist(width=200, height=160):
+                    for i, k in enumerate(health_dict.keys()):
+                        draw_status(status_separation/2 + i * status_separation, k)
 
         with dpg.window(tag="popup", popup=True, show=False):
             dpg.add_text("Node list")

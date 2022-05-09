@@ -1,10 +1,10 @@
 import logging
-import traceback
 
-from Similarity.SimilarityFilter import process_request
 from Logger.CustomLogFormatter import CustomLogFormatter
 from RabbitMq.Query import ResultResponse
-from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
+from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer, RabbitMQAsyncConsumer
+from Similarity.SimilarityFilter import process_request
+from Utils.Utils import setup_health_consumer
 
 logger = logging.getLogger("SimilarityConsumer")
 logger.setLevel(logging.DEBUG)
@@ -19,8 +19,12 @@ if __name__ == '__main__':
     logger.info("Starting SimilarityConsumer")
     consumer = RabbitMQSyncConsumer.from_config('similarity')
     producer = RabbitMQProducer.from_config()
+    health_consumer = RabbitMQAsyncConsumer.from_config('health')
     logger.info("SimilarityConsumer started successfully")
 
+    logger.info("Starting HealthConsumer")
+    setup_health_consumer(SERVICE_NAME, producer, health_consumer)
+    logger.info("HealthConsumer started successfully")
 
     def callback(ch, method, properties, body):
         logger.info(" [x] Received %r" % body)
