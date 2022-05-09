@@ -23,6 +23,13 @@
   "Similarity": {
     "path": ["file_selector","Path"],
     "percent": ["float", "Similarity percent"]
+  },
+  "Faces": {
+    "type": ["choice_propagate","faces","smiles","faces&smiles"],
+    "no faces" : ["float","faces"],
+    "no smiles" : ["float","smiles"],
+    "comparator": ["choice_propagate",">",">=","<","<=","=="],
+    "threshold": ["float","equal"]
   }
 
 }
