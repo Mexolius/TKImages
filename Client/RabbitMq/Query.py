@@ -74,6 +74,14 @@ class SimilarityQuery(Query):
     def topic():
         return 'similarity'
 
+class FacesQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    @staticmethod
+    def topic():
+        return 'faces_smiles'
+
 
 
 class SimpleQuery(Query):
