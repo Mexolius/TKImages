@@ -5,8 +5,8 @@ docker-compose up -d
 sbt run -y
 cd ../Client
 python3 -m pip install -r requirements.txt
-xterm -e python3 ColorFilterConsumer.py 
-xterm -e python3 DogFilterConsumer.py 
-xterm -e python3 SimilarityConsumer.py 
-xterm -e python3 SizeFilterConsumer.py 
-xterm -e python3 App.py 
+gnome-terminal -- python3 ColorFilterConsumer.py 
+gnome-terminal -- python3 DogFilterConsumer.py 
+gnome-terminal -- python3 SimilarityConsumer.py 
+gnome-terminal -- python3 SizeFilterConsumer.py 
+gnome-terminal -- python3 App.py 
