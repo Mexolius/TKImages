@@ -101,7 +101,7 @@ def choice_propagate(sender, app, u):
             break
         if v[0] == "choice_propagate" or v[1] == "shared" or group < sender:
             continue
-        elif (v[1] != app):
+        elif (v[1] not in app):
             dpg.hide_item(group)
         else:
             dpg.show_item(group)
@@ -123,12 +123,10 @@ def add_node(sender, app, u):
             for k, v in component.parameters.items():
                 v_filtered = v
                 show_input = True
-
                 if capture != "" and v[0] != "choice_propagate":
-
                     clause = v[1]
                     v_filtered = v[:1] + v[2:]
-                    if clause != capture and clause != "shared":
+                    if clause not in capture and clause != "shared":
                         show_input = False
                 if v_filtered[0] == "choice_propagate":
                     with dpg.group(xoffset=120, horizontal=True):
