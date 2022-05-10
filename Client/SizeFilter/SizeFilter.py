@@ -20,13 +20,6 @@ def check_size_in_cm(path):
     widthDPI, heightDPI = imagesize.getDPI(path)
     return [pixels_to_cm(width,widthDPI), pixels_to_cm(height,heightDPI)]
 
-def get_comparator(comparator, threshold=0):
-    return {"==": lambda reference, checked: abs(reference - checked) <= threshold,
-            ">": lambda reference, checked: reference > checked,
-            ">=": lambda reference, checked: reference >= checked,
-            "<": lambda reference, checked: reference < checked,
-            "<=": lambda reference, checked: reference <= checked}[comparator]
-
 
 def filter_by_KB(paths, reference, comparator, threshold):
     filtered_paths = []
@@ -42,7 +35,7 @@ def filter_by_pixels(paths, reference, comparator, threshold):
     comparator = get_comparator(comparator, threshold)
     for path in paths:
         width, height = imagesize.get(path)
-        if comparator(reference[0], width) and comparator(reference[1], height):
+        if comparator(width,reference[0]) and comparator(height, reference[1]):
             filtered_paths.append(path)
     return filtered_paths
 
@@ -52,7 +45,7 @@ def filter_by_cm(paths, reference, comparator, threshold):
     comparator = get_comparator(comparator, threshold)
     for path in paths:
         size_in_cm = check_size_in_cm(path) 
-        if comparator(reference[0], size_in_cm[0]) and comparator(reference[1], size_in_cm[1]):
+        if comparator( size_in_cm[0], reference[0]) and comparator( size_in_cm[1],reference[1]):
             filtered_paths.append(path)
     return filtered_paths
 
