@@ -53,9 +53,9 @@
   },
 
   "Text": {
-    "has text": ["choice_propagate", "Yes", "No"],
-    "contains": ["string", "Yes"],
-    "min length ": ["float", "Yes"],
-    "max length ": ["float", "Yes"]
+    "hasText": ["choice_propagate", "true", "false"],
+    "containsText": ["string", "true"],
+    "minLength": ["int", "true"],
+    "maxLength": ["int", "true"]
   }
 }
