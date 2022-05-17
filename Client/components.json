@@ -1,37 +1,61 @@
 {
-  "Size":{
-    "unit": ["choice_propagate","pixels","kb","cm"],
-    "pixels":["vec2f","pixels"],
-    "kb": ["float","kb"],
-    "cm": ["vec2f","cm"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
+  "Size": {
+    "unit": ["choice_propagate", "pixels", "kb", "cm"],
+    "pixels": ["vec2f", "pixels"],
+    "kb": ["float", "kb"],
+    "cm": ["vec2f", "cm"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
   },
 
   "Colors": {
     "color": ["color"],
-    "system": ["choice","RGB","HSV","CMYK"],
-    "metric": ["choice_propagate","min","max","mean","median","rms","percentage"],
-    "pixel tolerance": ["float","percentage"],
-    "% threshold": ["float","percentage"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
+    "system": ["choice", "RGB", "HSV", "CMYK"],
+    "metric": [
+      "choice_propagate",
+      "min",
+      "max",
+      "mean",
+      "median",
+      "rms",
+      "percentage"
+    ],
+    "pixel tolerance": ["float", "percentage"],
+    "% threshold": ["float", "percentage"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
   },
 
   "Dogs": {
-    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer", "corgi", "golden retriever"]
+    "breed": [
+      "choice",
+      "Any",
+      "dalmatian",
+      "cocker",
+      "bulldog",
+      "boxer",
+      "corgi",
+      "golden retriever"
+    ]
   },
 
   "Similarity": {
-    "path": ["file_selector","Path"],
+    "path": ["file_selector", "Path"],
     "percent": ["float", "Similarity percent"]
   },
-  "Faces": {
-    "type": ["choice_propagate","faces","smiles","faces&smiles"],
-    "no faces" : ["float","faces"],
-    "no smiles" : ["float","smiles"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
-  }
 
+  "Faces": {
+    "type": ["choice_propagate", "faces", "smiles", "faces&smiles"],
+    "no faces": ["float", "faces"],
+    "no smiles": ["float", "smiles"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
+  },
+
+  "Text": {
+    "has text": ["choice_propagate", "Yes", "No"],
+    "contains": ["string", "Yes"],
+    "min length ": ["float", "Yes"],
+    "max length ": ["float", "Yes"]
+  }
 }
