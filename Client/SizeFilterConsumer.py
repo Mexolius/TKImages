@@ -27,7 +27,6 @@ if __name__ == '__main__':
     setup_health_consumer(SERVICE_NAME, producer, health_consumer)
     logger.info("HealthConsumer started successfully")
 
-
     def callback(ch, method, properties, body):
         logger.info(" [x] Received %r" % body)
         try:
@@ -37,6 +36,5 @@ if __name__ == '__main__':
             logging.error(traceback.format_exc())
             resp = ResultResponse(500, [], SERVICE_NAME)
         producer.publish_rmq_message(resp)
-
 
     consumer.consume(callback)
