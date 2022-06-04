@@ -36,5 +36,4 @@ if __name__ == '__main__':
         producer.publish_rmq_message(resp)
         logger.info("SimilarityConsumer Finished Processing")
 
-
     consumer.consume(callback)

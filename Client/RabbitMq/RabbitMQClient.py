@@ -45,20 +45,21 @@ class RabbitMQProducer(RabbitMQConnection):
         self._channel = self._connection.channel()
 
     def publish(self, exchange, topic, data):
-        self._channel.basic_publish(exchange=exchange, routing_key=topic, body=data)
+        self._channel.basic_publish(
+            exchange=exchange, routing_key=topic, body=data)
 
     def publish_rmq_message(self, message: RabbitMQMessage):
-        self._channel.basic_publish(exchange=message.exchange(), routing_key=message.topic(), body=message.json())
+        self._channel.basic_publish(exchange=message.exchange(
+        ), routing_key=message.topic(), body=message.json())
 
 
 class RabbitMQConsumer(RabbitMQConnection, ABC):
     _exchange: str
     _queue: str
 
-
-
     def __init__(self, server, port, exchange, queue, username, password):
-        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(username, password), port=port, heartbeat = 300)
+        params = pika.ConnectionParameters(server, credentials=pika.PlainCredentials(
+            username, password), port=port, heartbeat=300)
         self._connection = pika.BlockingConnection(params)
         self._channel = self._connection.channel()
         self._exchange = exchange
@@ -88,7 +89,8 @@ class RabbitMQSyncConsumer(RabbitMQConsumer):
         )
 
     def consume(self, callback):
-        self._channel.basic_consume(queue=self._queue, on_message_callback=callback, auto_ack=True)
+        self._channel.basic_consume(
+            queue=self._queue, on_message_callback=callback, auto_ack=True)
         self._channel.start_consuming()
 
 

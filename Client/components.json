@@ -32,6 +32,15 @@
     "no smiles" : ["float","smiles"],
     "comparator": ["choice_propagate",">",">=","<","<=","=="],
     "threshold": ["float","equal"]
+  },
+  "Metadata": {
+	  "exposure time": ["optional_float", "exposureTime"],
+	  "f number": ["optional_float", "fNumber"],
+	  "focal length": ["optional_float", "focalLength"],
+	  "flash": ["optional_float", "flash"],
+	  "min pixel width": ["int"],
+	  "max pixel width": ["int"],
+	  "min pixel height": ["int"],
+	  "max pixel height": ["int"]
   }
-
 }
