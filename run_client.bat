@@ -10,3 +10,4 @@ start cmd /k python SimilarityConsumer.py
 start cmd /k python SizeFilterConsumer.py 
 start cmd /k python FacesFilterConsumer.py 
 start cmd /k python App.py 
+start cmd /k npm start

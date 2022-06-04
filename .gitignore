@@ -1,4 +1,5 @@
-
+ImageFinderRabbitMqSetupApp/null
+ImageFinderRabbitMqSetupApp/null/*
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,scala,sbt
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,scala,sbt
 
@@ -135,3 +136,5 @@ hs_err_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,scala,sbt
 *.pyc
+node_modules
+env
