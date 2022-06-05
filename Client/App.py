@@ -97,7 +97,8 @@ def resize_ui(sender, app_data):
     h = dpg.get_viewport_height()
 
     # render font at higher res and downsample, better then upsampling
-    dpg.set_global_font_scale(1 + (h - initial_height) / (4 * initial_height) - 0.5)
+    dpg.set_global_font_scale(
+        1 + (h - initial_height) / (4 * initial_height) - 0.5)
 
 
 def show_popup(sender, app_data):
@@ -197,11 +198,20 @@ def add_node(sender, app, u):
                     with dpg.group(xoffset=120, horizontal=True, show=show_input):
                         dpg.add_text(k, label=k)
                         dpg.add_input_text(width=150, default_value="0")
+                elif v_filtered[0] == "int":
+                    with dpg.group(xoffset=120, horizontal=True, show=show_input):
+                        dpg.add_text(k, label=k)
+                        dpg.add_input_int(width=150, default_value=0,
+                                          min_clamped=True,
+                                          max_clamped=True,
+                                          min_value=v_filtered[1],
+                                          max_value=v_filtered[2])
                 elif v_filtered[0] == "vec2f":
 
                     with dpg.group(xoffset=120, horizontal=True, show=show_input):
                         dpg.add_text(k, label=k)
-                        dpg.add_input_floatx(size=2, width=150, default_value=(0, 0))
+                        dpg.add_input_floatx(
+                            size=2, width=150, default_value=(0, 0))
                 elif v_filtered[0] == "choice":
                     with dpg.group(xoffset=120, horizontal=True, show=show_input):
                         dpg.add_text(k, label=k)
@@ -211,7 +221,8 @@ def add_node(sender, app, u):
                                 vi.append(comparator_dict[i])
                             dpg.add_combo(vi, width=150, default_value=vi[0])
                         else:
-                            dpg.add_combo(v_filtered[1:], width=150, default_value=v_filtered[1])
+                            dpg.add_combo(
+                                v_filtered[1:], width=150, default_value=v_filtered[1])
 
                 elif v_filtered[0] == "color":
                     with dpg.group(show=show_input):
@@ -225,7 +236,8 @@ def add_node(sender, app, u):
 
                         with dpg.file_dialog(label="File Dialog", width=400, height=500, show=False, user_data=id_path,
                                              callback=file_selector_callback):
-                            dpg.add_file_extension(".*", color=(255, 255, 255, 255))
+                            dpg.add_file_extension(
+                                ".*", color=(255, 255, 255, 255))
                         dpg.add_button(label="File Selector", user_data=dpg.last_container(),
                                        callback=lambda s, a, u: dpg.configure_item(u, show=True), indent=280)
 
@@ -249,7 +261,8 @@ def execute_sequence(query_executor):
     if len(input) == 0:
         raise_error("Error: Empty root path")
         return
-    files = [log for log in glob.glob(input + "/**", recursive=True) if not os.path.isdir(log)]
+    files = [log for log in glob.glob(
+        input + "/**", recursive=True) if not os.path.isdir(log)]
     if len(files) == 0:
         raise_error("Error: Cannot find any files in the root path")
         return
@@ -270,7 +283,8 @@ def execute_sequence(query_executor):
             id = id[1][1]
 
             if dpg.get_item_label(id0) == "comparator":
-                data[dpg.get_item_label(id0)] = comparator_dict_inv[dpg.get_value(id)]
+                data[dpg.get_item_label(
+                    id0)] = comparator_dict_inv[dpg.get_value(id)]
             else:
                 data[dpg.get_item_label(id0)] = dpg.get_value(id)
 
@@ -281,7 +295,8 @@ def execute_sequence(query_executor):
                  .build())
         parsed.append(value)
         try:
-            next = links[dpg.get_item_children(dpg.get_item_parent(next))[1][1]]
+            next = links[dpg.get_item_children(
+                dpg.get_item_parent(next))[1][1]]
         except KeyError:
             break
 
@@ -297,8 +312,10 @@ def execute_sequence(query_executor):
         for item in body_py["paths"]:
             try:
                 width, height, channels, data = dpg.load_image(item)
-                id = dpg.add_static_texture(width, height, data, parent="texture_container")
-                dpg.add_image(width=100 * (width / height), height=100, texture_tag=id, parent="results")
+                id = dpg.add_static_texture(
+                    width, height, data, parent="texture_container")
+                dpg.add_image(width=100 * (width / height),
+                              height=100, texture_tag=id, parent="results")
             except TypeError:
                 continue
 
@@ -325,7 +342,8 @@ def execute_sequence(query_executor):
 
 
 def draw_status(pos, tag):
-    dpg.draw_circle((10, pos), status_circle_radius, thickness=1, fill=offline_color, tag=tag)
+    dpg.draw_circle((10, pos), status_circle_radius,
+                    thickness=1, fill=offline_color, tag=tag)
 
 
 # todo
@@ -349,9 +367,11 @@ if __name__ == '__main__':
     setup_health_sender_thread(status_check_interval)
     dpg.create_context()
 
-    dpg.add_texture_registry(label="texture_container", tag="texture_container")
+    dpg.add_texture_registry(label="texture_container",
+                             tag="texture_container")
     with dpg.font_registry():
-        default_font = dpg.add_font("Fonts/Montserrat-Light.otf", font_size, tag="font")
+        default_font = dpg.add_font(
+            "Fonts/Montserrat-Light.otf", font_size, tag="font")
 
     with dpg.handler_registry():
         dpg.add_mouse_down_handler(callback=show_popup)
@@ -363,10 +383,8 @@ if __name__ == '__main__':
     rmq_producer = RabbitMQProducer.from_config()
     query_executor = QueryExecutor(rmq_producer, rmq_consumer)
 
-
     def execution_callback():
         execute_sequence(query_executor)
-
 
     parse_components("components.json")
     with dpg.window(tag="main_window"):
@@ -374,7 +392,8 @@ if __name__ == '__main__':
             dpg.add_button(label="Execute", callback=execution_callback)
             dpg.add_button(label="Cancel", callback=cancel_execution)
             dpg.add_progress_bar(tag="progress_bar")
-        dpg.add_text(tag="console", default_value="Error message: 0", color=(0, 255, 0))
+        dpg.add_text(
+            tag="console", default_value="Error message: 0", color=(0, 255, 0))
         dpg.add_text("Ctrl: remove link\nRMB: node list\nDEL: delete selected")
         with dpg.collapsing_header(label="Results"):
             with dpg.child_window(height=150, horizontal_scrollbar=True):
@@ -388,24 +407,28 @@ if __name__ == '__main__':
                         dpg.add_text(k)
                 with dpg.drawlist(width=200, height=160):
                     for i, k in enumerate(health_dict.keys()):
-                        draw_status(status_separation/2 + i * status_separation, k)
+                        draw_status(status_separation/2 +
+                                    i * status_separation, k)
 
         with dpg.window(tag="popup", popup=True, show=False):
             dpg.add_text("Node list")
             dpg.add_separator()
             for name, params in component_map.items():
-                dpg.add_selectable(label=name, user_data=[name, component_map[name]], callback=add_node)
+                dpg.add_selectable(label=name, user_data=[
+                                   name, component_map[name]], callback=add_node)
 
         with dpg.node_editor(callback=link_callback, delink_callback=delink_callback, tag="node_editor",
                              tracked=True) as node_editor:
             with dpg.node(label="Input", tag="input"):
                 with dpg.node_attribute(tag="input_param", attribute_type=dpg.mvNode_Attr_Output):
-                    dpg.add_input_text(label="root path", width=150, tag="root_path")
+                    dpg.add_input_text(label="root path",
+                                       width=150, tag="root_path")
 
     dpg.bind_font(default_font)
     dpg.set_viewport_resize_callback(resize_ui)
 
-    dpg.create_viewport(title='Image Finder', width=initial_width, height=initial_height)
+    dpg.create_viewport(title='Image Finder',
+                        width=initial_width, height=initial_height)
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("main_window", True)

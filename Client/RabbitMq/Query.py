@@ -84,6 +84,15 @@ class DogsQuery(Query):
         return 'dogs_breeds'
 
 
+class WeatherQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    @staticmethod
+    def topic():
+        return 'weather'
+
+
 class SimilarityQuery(Query):
     def __init__(self, paths, params):
         super().__init__(paths, params)
@@ -91,6 +100,7 @@ class SimilarityQuery(Query):
     @staticmethod
     def topic():
         return 'similarity'
+
 
 class FacesQuery(Query):
     def __init__(self, paths, params):
