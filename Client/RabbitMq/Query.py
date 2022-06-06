@@ -119,3 +119,11 @@ class SimpleQuery(Query):
     @staticmethod
     def topic():
         return 'size'
+
+class TextQuery(Query):
+    def __init__(self, paths, params):
+        super().__init__(paths, params)
+
+    @staticmethod
+    def topic():
+        return 'text'
