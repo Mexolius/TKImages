@@ -1,6 +1,4 @@
-import { ModuleOptions } from './moduleOptions.interface';
-
-export default interface MetadataOptions extends ModuleOptions {
+export default interface MetadataOptions {
 	exposureTime?: number;
 	fNumber?: number;
 	focalLength?: number;

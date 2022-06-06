@@ -36,7 +36,6 @@ const read_ini_file = (file_name: string): any => {
               pixelXDimMax: msg_decoded.params["max pixel width"],
               pixelYDimMin: msg_decoded.params["min pixel height"],
               pixelYDimMax: msg_decoded.params["max pixel height"],
-              name: 'metadata'
             } 
 
             let result_paths = await handleRequest(new MetadataRequest({paths: msg_decoded.paths, options: options}));
