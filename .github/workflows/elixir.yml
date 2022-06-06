@@ -1,0 +1,38 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Elixir CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - text_server/**
+  pull_request:
+    branches: [master]
+    paths:
+      - text_server/**
+
+# see https://github.community/t/treating-warnings-as-errors-because-process-env-ci-true/18032
+env:
+    CI: false
+
+jobs:
+    build_and_test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-elixir@v1
+              with:
+                  otp-version: "22.3"
+                  elixir-version: "1.13"
+                  experimental-otp: true
+
+            - run: sudo apt-get update
+            - name: install tesseract
+              run: sudo apt-get install tesseract-ocr -y
+            - run: tesseract --version
+            - working-directory: ./text_server
+              run: mix deps.get
+            - working-directory: ./text_server
+              run: mix test

@@ -1,38 +1,75 @@
 {
-  "Size":{
-    "unit": ["choice_propagate","pixels","kb","cm"],
-    "pixels":["vec2f","pixels"],
-    "kb": ["float","kb"],
-    "cm": ["vec2f","cm"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
+  "Size": {
+    "unit": ["choice_propagate", "pixels", "kb", "cm"],
+    "pixels": ["vec2f", "pixels"],
+    "kb": ["float", "kb"],
+    "cm": ["vec2f", "cm"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
   },
 
   "Colors": {
     "color": ["color"],
-    "system": ["choice","RGB","HSV","CMYK"],
-    "metric": ["choice_propagate","min","max","mean","median","rms","percentage"],
-    "pixel tolerance": ["float","percentage"],
-    "% threshold": ["float","percentage"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
+    "system": ["choice", "RGB", "HSV", "CMYK"],
+    "metric": [
+      "choice_propagate",
+      "min",
+      "max",
+      "mean",
+      "median",
+      "rms",
+      "percentage"
+    ],
+    "pixel tolerance": ["float", "percentage"],
+    "% threshold": ["float", "percentage"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
   },
 
   "Dogs": {
-    "breed": ["choice","Any","dalmatian","cocker", "bulldog", "boxer", "corgi", "golden retriever"]
+    "breed": [
+      "choice",
+      "Any",
+      "dalmatian",
+      "cocker",
+      "bulldog",
+      "boxer",
+      "corgi",
+      "golden retriever"
+    ]
   },
 
   "Similarity": {
-    "path": ["file_selector","Path"],
+    "path": ["file_selector", "Path"],
     "percent": ["float", "Similarity percent"]
   },
-  "Faces": {
-    "type": ["choice_propagate","faces","smiles","faces&smiles"],
-    "no faces" : ["float","faces"],
-    "no smiles" : ["float","smiles"],
-    "comparator": ["choice_propagate",">",">=","<","<=","=="],
-    "threshold": ["float","equal"]
+
+  "Weather": {
+    "type": [
+      "choice",
+      "mostlycloudy",
+      "moderate rain",
+      "clear",
+      "rain showers",
+      "mainly clear",
+      "cloudy",
+      "snow",
+      "fog",
+      "rain",
+      "drizzle",
+      "rain fog"
+    ],
+    "precision": ["int", 0, 9]
   },
+
+  "Faces": {
+    "type": ["choice_propagate", "faces", "smiles", "faces&smiles"],
+    "no faces": ["float", "faces"],
+    "no smiles": ["float", "smiles"],
+    "comparator": ["choice_propagate", ">", ">=", "<", "<=", "=="],
+    "threshold": ["float", "equal"]
+  },
+
   "Metadata": {
 	  "exposure time": ["optional_float", "exposureTime"],
 	  "f number": ["optional_float", "fNumber"],
@@ -42,5 +79,12 @@
 	  "max pixel width": ["int"],
 	  "min pixel height": ["int"],
 	  "max pixel height": ["int"]
+  },
+
+  "Text": {
+    "hasText": ["choice_propagate", "true", "false"],
+    "containsText": ["string", "true"],
+    "minLength": ["int", "true"],
+    "maxLength": ["int", "true"]
   }
 }

@@ -4,7 +4,7 @@ from typing import Sequence
 
 from ColorFilter.Color import ColorQuery
 from Logger.CustomLogFormatter import CustomLogFormatter
-from RabbitMq.Query import SizeQuery, Query, DogsQuery, SimilarityQuery, FacesQuery, MetadataQuery
+from RabbitMq.Query import SizeQuery, Query, DogsQuery, SimilarityQuery, FacesQuery, TextQuery, WeatherQuery, MetadataQuery
 from RabbitMq.RabbitMQClient import RabbitMQProducer, RabbitMQSyncConsumer
 
 logger = logging.getLogger("QueryUtils")
@@ -40,6 +40,8 @@ class QueryBuilder:
             'Similarity': lambda paths, data: SimilarityQuery(paths, data),
             'Faces': lambda paths, data: FacesQuery(paths, data),
             'Metadata': lambda paths, data: MetadataQuery(paths, data),
+            'Text': lambda paths, data: TextQuery(paths, data),
+            'Weather': lambda paths, data: WeatherQuery(paths, data)
         }[self.__query_type](self.__query_paths, self.__query_data)
 
 
